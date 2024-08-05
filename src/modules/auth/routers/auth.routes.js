@@ -2,7 +2,6 @@ import { Router } from "express";
 import { confirm_email, login, signup } from "../controllers/auth.controller.js";
 import { signinSchema, signupSchema } from "../validations/auth.validation.js";
 import { validate } from "../../../middelwares/validation.middelware.js";
-import { validateFields } from "../../../middelwares/validateFields.js";
 import { uploadSingle } from "../../../middelwares/upload.middelware.js";
 import { checkAccountVerification } from "../middelwares/auth.middelware.js";
 

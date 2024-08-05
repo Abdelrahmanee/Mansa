@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { userModel } from "../../user/models/user.model.js";
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
@@ -7,7 +6,6 @@ import { AppError, catchAsyncError } from "../../../utilies/error.js";
 
 export const authorize = (...roles) => {
     return catchAsyncError(async (req, res, next) => {
-       
         if (roles.includes(req.user.role)) return next()
         return next(new AppError('you not allowed to access this endpoint', 401))
     })

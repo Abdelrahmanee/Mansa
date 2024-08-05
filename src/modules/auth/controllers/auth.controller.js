@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs'
 import { userModel } from "../../user/models/user.model.js";
 import jwt from "jsonwebtoken";
 import { AppError, catchAsyncError } from "../../../utilies/error.js";

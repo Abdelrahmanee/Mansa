@@ -1,17 +1,9 @@
-
-
-
-
-
-
-import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { v2 as cloudinary } from 'cloudinary';
-
-import { AppError, catchAsyncError } from "../../../utilies/error.js";
 import { userModel } from "../models/user.model.js";
-import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
 import { removeFile } from '../../../utilies/removeFile.js';
+import { AppError, catchAsyncError } from "../../../utilies/error.js";
+import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
 
 
 
