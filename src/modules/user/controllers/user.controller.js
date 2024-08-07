@@ -1,11 +1,9 @@
 import jwt from 'jsonwebtoken'
-import { v2 as cloudinary } from 'cloudinary';
+import { v4 as uuid4 } from 'uuid';
+import cloudinary from 'cloudinary';
 import { userModel } from "../models/user.model.js";
-import { removeFile } from '../../../utilies/removeFile.js';
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
 import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
-
-
 
 // update account.
 export const updateAccount = catchAsyncError(async (req, res, next) => {
@@ -64,58 +62,77 @@ export const updateAccount = catchAsyncError(async (req, res, next) => {
 });
 
 export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
+    // Check if a file was uploaded
+    if (!req.file) {
+        return next(new AppError('No file uploaded', 400));
+    }
+
+    // Extract the user ID from the request
     const { _id } = req.user;
     if (!_id) {
         return next(new AppError('User not found', 404));
-        await removeFile(req.file.path)
     }
 
+    // Check if the user exists
     const user = await userModel.findById(_id);
     if (!user) {
         return next(new AppError('User not found', 404));
-        await removeFile(req.file.path)
     }
 
-    // Extract the public ID from the profile picture URL
-    const profilePictureUrl = user.profilePicture;
-    if (profilePictureUrl) {
-        const publicIdMatch = profilePictureUrl.match(/\/upload\/(?:v[0-9]+\/)?([^/.]+)(?=\.[^.]+$)/);
-        const publicId = publicIdMatch ? publicIdMatch[1] : null;
+    // Extract the public ID from the old profile picture URL and delete it from Cloudinary
+    const oldProfilePictureUrl = user.profilePicture;
+    if (oldProfilePictureUrl) {
+        const regex = /\/upload\/(?:v[0-9]+\/)?([^/.]+\/[^/.]+)(?=\.[^.]+$)/;
+        const match = oldProfilePictureUrl.match(regex);
 
-
-        // Remove the old profile picture from Cloudinary if public ID exists
-        if (publicId) {
+        if (match && match[1]) {
+            const oldPublicId = match[1];
             try {
-                const destroyResponse = await cloudinary.uploader.destroy(publicId);
-
-                //    await cloudinary.uploader.destroy(destroyResponse.UploadResponse)
+                await cloudinary.v2.uploader.destroy(oldPublicId);
             } catch (error) {
-                console.error('Error removing image from Cloudinary:', error);
+                console.error('Error removing old image from Cloudinary:', error);
             }
+        } else {
+            console.log('No public ID found for old image.');
         }
     }
 
+
+
     // Upload the new profile picture to Cloudinary
-    let cloud;
+    let newProfilePictureUrl = '';
     try {
-        cloud = await cloudinary.uploader.upload(req.file.path);
+        const uploadResponse = await new Promise((resolve, reject) => {
+            cloudinary.v2.uploader.upload_stream(
+                { folder: 'Mansa', public_id: uuid4() },
+                (error, result) => {
+                    if (error) {
+                        reject(new AppError('Error uploading image to Cloudinary', 500));
+                    } else {
+                        resolve(result);
+                    }
+                }
+            ).end(req.file.buffer);
+        });
+
+        newProfilePictureUrl = uploadResponse.secure_url;
     } catch (error) {
-        return next(new AppError('Failed to upload profile picture', 500));
+        return next(new AppError('Error uploading image to Cloudinary', 500));
     }
 
     // Update the user with the new profile picture URL
-    user.profilePicture = cloud.secure_url;
-    // Save the new public ID if needed
-    // user.profilePicturePublicId = cloud.public_id;
+    user.profilePicture = newProfilePictureUrl;
     await user.save();
 
-    // Remove the local file
-    await removeFile(req.file.path)
     res.status(200).json({
-        message: "Profile picture updated successfully",
+        message: 'Profile picture updated successfully',
         user
     });
 });
+
+
+
+
 export const updateAccountEmail = catchAsyncError(async (req, res, next) => {
     const { _id: userId, email: userEmail } = req.user
     const { email } = req.body

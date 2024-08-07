@@ -20,7 +20,7 @@ router.put('/update_account',
     updateAccount
 )
 router.patch('/update_profilePicture',
-    uploadSingle('profilePicture', 'profilePictures'),
+    uploadSingle('profilePicture'),
     validate(updateProfilePictureSchema),
     authenticate,
     authorize(ROLES.STUDENT, ROLES.ADMIN),
