@@ -37,13 +37,12 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 
 export const signup = catchAsyncError(async (req, res) => {
-    let { filename: profilePicture } = req.file
-    req.body.profilePicture = profilePicture
+    const profilePictureUrl = req.file.path;
+    req.body.profilePicture = profilePictureUrl
 
     const isEmailExist = await userModel.findOne({ $or: [{ email: req.body.email }, { mobileNumber: req.body.mobileNumber }] })
 
     if (isEmailExist) {
-        await removeFile(req.file.path);
         throw new AppError('try another email or mobileNumber', 409)
 
     }
@@ -53,11 +52,6 @@ export const signup = catchAsyncError(async (req, res) => {
 
     const link = `${process.env.BASE_URL}api/v1/auth/confirmEmail/${emailToken}`;
     await sendEmailVerfication(email, { link })
-    let cloud = await cloudinary.uploader.upload(req.file.path)
-    req.body.profilePicture = cloud.secure_url
-
-
-    await removeFile(req.file.path);
 
 
     const user = await userModel.create(req.body)

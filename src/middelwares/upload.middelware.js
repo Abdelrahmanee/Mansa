@@ -1,14 +1,15 @@
 import multer from 'multer';
 import { v4 as uuid4 } from 'uuid';
 import { AppError } from '../utilies/error.js';
+import cloudinary from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 const getUploadMiddleware = (folderName) => {
-    const storage = multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, `uploads/${folderName}`);
-        },
-        filename: function (req, file, cb) {
-            cb(null, uuid4() + file.originalname);
+    const storage = new CloudinaryStorage({
+        cloudinary: cloudinary.v2,
+        params: {
+            folder: 'Mansa', // replace with your folder name in Cloudinary
+            public_id: (req, file) => uuid4(),
         },
     });
 
