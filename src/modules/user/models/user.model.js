@@ -51,8 +51,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Student', 'Admin', 'Teacher'],
-        default: 'Student'
+        enum: ['student', 'admin', 'teacher'],
+        default: 'student'
     },
     status: {
         type: String,
@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema({
     },
     sex: {
         type: String,
-        enum: ['Male', 'Female'],
+        enum: ['male', 'female'],
         required: true
     },
     passwordChangedAt: { type: Date, },

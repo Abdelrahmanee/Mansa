@@ -7,12 +7,14 @@ import v1Router from './routers/v1.routes.js'
 import { AppError } from './utilies/error.js'
 import { cron } from './utilies/cron.js'
 import { cloudinaryCofigration } from './utilies/cloudinary.js'
+import cookieParser from 'cookie-parser'
 
 
 export const bootstrap = (app) => {
 
     cloudinaryCofigration();
 
+    app.use(cookieParser())
     app.use(express.json())
     app.use(cors());
     app.use(morgan('dev'))
