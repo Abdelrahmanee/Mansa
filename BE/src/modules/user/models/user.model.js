@@ -31,11 +31,23 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    DOB: {
+        type: Date,
+        required: true
+    },
     mobileNumber: {
         type: String,
         unique: true,
         required: true,
         trim: true,
+    },
+    GOV :{
+        type : String,
+        required:true
+    },
+    city :{
+        type : String,
+        required:true
     },
     role: {
         type: String,
@@ -64,6 +76,11 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
+    },
+    sex: {
+        type: String,
+        enum: ['male', 'female'],
+        required: true
     },
     passwordChangedAt: { type: Date, },
     userName: { type: String },
