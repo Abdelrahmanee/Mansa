@@ -4,7 +4,7 @@ import cloudinary from 'cloudinary';
 import { userModel } from "../../user/models/user.model.js";
 import { sendEmailVerfication } from "../../../utilies/email.js";
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
-
+import AuthService from'../service/service.js'
 
 
 
@@ -44,61 +44,26 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 
 export const signup = catchAsyncError(async (req, res, next) => {
-    let profilePictureUrl = '';
-    let publicId = '';
-
+    const { email, mobileNumber } = req.body;
 
     // Check if email or mobile number already exists
-    const isEmailExist = await userModel.findOne({
-        $or: [{ email: req.body.email }, { mobileNumber: req.body.mobileNumber }]
-    });
+    await AuthService.checkIfEmailOrMobileExists(email, mobileNumber);
 
-    if (isEmailExist) {
-        return next(new AppError('Please Try Another Email or Mobile number', 409));
-    }
-
-    // Check if file is uploaded
-    if (req.file) {
-        // Upload the image to Cloudinary
-        const uploadResponse = await new Promise((resolve, reject) => {
-            const stream = cloudinary.v2.uploader.upload_stream(
-                { folder: 'Mansa', public_id: uuid4() },
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(result);
-                    }
-                }
-            );
-            stream.end(req.file.buffer);
-        });
-
-        profilePictureUrl = uploadResponse.secure_url;
-        publicId = uploadResponse.public_id;
-    }
-
+    // Upload profile picture if provided
+    const { profilePictureUrl, publicId } = await AuthService.uploadProfilePicture(req.file);
+    
+    console.log({ profilePictureUrl, publicId });
     // Attach profile picture URL to the request body
     req.body.profilePicture = profilePictureUrl;
 
-
-
     // Generate email verification token and send verification email
-    const { email } = req.body;
-    const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY, { expiresIn: '1h' });
-    const link = `${process.env.BASE_URL}api/v1/auth/confirmEmail/${emailToken}`;
-    await sendEmailVerfication(email, { link });
+    await AuthService.generateEmailVerificationToken(email);
 
-    for (const key in req.body) {
-        if (typeof req.body[key] === 'string') {
-            req.body[key] = req.body[key].toLowerCase();
-        }
-    }
-
-    
+    // Normalize request data
+    AuthService.normalizeData(req.body);
 
     // Create a new user
-    const user = await userModel.create(req.body);
+    const user = await AuthService.createUser(req.body);
 
     res.status(201).json({
         status: 'success',
@@ -106,7 +71,6 @@ export const signup = catchAsyncError(async (req, res, next) => {
         data: user
     });
 });
-
 
 
 export const confirm_email = catchAsyncError(async (req, res, next) => {
