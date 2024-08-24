@@ -31,28 +31,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null
     },
-    DOB: {
-        type: Date,
-        required: true
-    },
     mobileNumber: {
         type: String,
         unique: true,
         required: true,
         trim: true,
     },
-    GOV :{
-        type : String,
-        required:true
-    },
-    city :{
-        type : String,
-        required:true
-    },
     role: {
         type: String,
-        enum: ['Student', 'Admin', 'Teacher'],
-        default: 'Student'
+        enum: ['student', 'admin', 'teacher'],
+        default: 'student'
     },
     status: {
         type: String,
@@ -76,11 +64,6 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-    },
-    sex: {
-        type: String,
-        enum: ['Male', 'Female'],
-        required: true
     },
     passwordChangedAt: { type: Date, },
     userName: { type: String },

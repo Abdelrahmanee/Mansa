@@ -17,12 +17,8 @@ export const signupSchema = Joi.object({
         password: Joi.string().pattern(new RegExp('^[1-9]')).required(),
         firstName: Joi.string().min(2).max(100).required(),
         lastName: Joi.string().min(2).max(100).required(),
-        city: Joi.string().min(2).max(100).required(),
-        GOV: Joi.string().min(2).max(100).required(),
-        DOB: Joi.date().required(),
         mobileNumber: Joi.string().required(),
         role: Joi.string(),
-        sex: Joi.string().valid('Male', 'Female').required()
     },
     params: {},
     query: {},

@@ -19,14 +19,21 @@ export const login = catchAsyncError(async (req, res, next) => {
     req.user.isLoggedOut = false
     await req.user.save();
 
+    res.cookie('authToken', token, {
+        httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie
+        secure: process.env.NODE_ENV === 'production',  // Sends cookie over HTTPS only
+        sameSite: 'strict',  // Prevents CSRF
+        maxAge: 24 * 60 * 60 * 1000  // Cookie expiration in milliseconds (e.g., 1 day)
+    });
+
     res.status(200).json({
         status: 'success',
-        message: "Signed in success", token, user: {
-            email,
-            userName,
-            role,
-            status,
-            sex,
+        message: "Signed in success", user: {
+            email: email.toLowerCase(),
+            userName : userName.toLowerCase(),
+            role: role.toLowerCase(),
+            status: status.toLowerCase(),
+            sex: sex.toLowerCase(),
             age,
             mobileNumber,
             _id
@@ -81,6 +88,14 @@ export const signup = catchAsyncError(async (req, res, next) => {
     const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY, { expiresIn: '1h' });
     const link = `${process.env.BASE_URL}api/v1/auth/confirmEmail/${emailToken}`;
     await sendEmailVerfication(email, { link });
+
+    for (const key in req.body) {
+        if (typeof req.body[key] === 'string') {
+            req.body[key] = req.body[key].toLowerCase();
+        }
+    }
+
+    
 
     // Create a new user
     const user = await userModel.create(req.body);

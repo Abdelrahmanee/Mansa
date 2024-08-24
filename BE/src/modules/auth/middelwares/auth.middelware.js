@@ -12,7 +12,11 @@ export const authorize = (...roles) => {
 }
 
 export const authenticate = catchAsyncError(async (req, res, next) => {
-    const { token } = req.headers
+    const token = req.cookies.authToken
+
+    console.log(token);
+    
+
     if (!token) next(new AppError("Unathorized", 401))
 
     let userPayload = null;
