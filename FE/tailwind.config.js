@@ -7,6 +7,9 @@ module.exports = withMT({
   ],
   theme: {
     extend: {
+      fontFamily: {
+        QuickSand: ["Quicksand", 'sans-serif']
+      },
       colors:{
         main: {
           100: '#00BCD4',
@@ -14,7 +17,7 @@ module.exports = withMT({
           300: '#00838F'
         },
         secondary: {
-          100: '#00838F',
+          100: '#FFA000',
           200: '#FFECB3',
           300: '#FF6F00'
         },
