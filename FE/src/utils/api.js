@@ -10,7 +10,19 @@ export const signup = async (formData) => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return res.data; // Return the data on success
+    return res.data;
+  } catch (error) {
+    console.log('API Error:', error);
+    // Rethrow the error to be handled by the caller
+    throw error;
+  }
+};
+export const login = async (data) => {
+  try {
+    const res = await axios.post(`${baseUrl}/auth/login`, data, {
+      withCredentials: true, // Include credentials to handle cookies
+    });
+    return res.data;
   } catch (error) {
     console.log('API Error:', error);
     // Rethrow the error to be handled by the caller

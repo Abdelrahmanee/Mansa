@@ -16,7 +16,12 @@ export const bootstrap = (app) => {
 
     app.use(cookieParser())
     app.use(express.json())
-    app.use(cors());
+    app.use(cors({
+        origin: 'http://localhost:5173', // Frontend's address
+        credentials: true, // Allow credentials (cookies) to be included in requests
+      }));
+      
+      
     app.use(morgan('dev'))
 
     cron();
