@@ -1,12 +1,12 @@
-import { Button, Card, Input, Option, Select, Typography } from '@material-tailwind/react';
+import { Button, Input, Option, Select, Typography } from '@material-tailwind/react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import "react-datepicker/dist/react-datepicker.css";
 import { useMutation } from '@tanstack/react-query';
 import { signupSchema } from './Validation';
+import { signup } from '../../utils/api';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { signup } from '../../utils/api';
 
 
 function SignupForm({ handleNext, handlePrev, activeStep, setActiveStep }) {
@@ -85,6 +85,8 @@ function SignupForm({ handleNext, handlePrev, activeStep, setActiveStep }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mt-8 mb-2 flex flex-col gap-4' autoComplete='false'>
+
+      
       {activeStep === 0 && (<>
         <div className='w-full '>
           <Input
@@ -206,7 +208,7 @@ function SignupForm({ handleNext, handlePrev, activeStep, setActiveStep }) {
 
         <div className='flex justify-between'>
           <div></div>
-          <Button onClick={() => handleNextStep(['firstName', 'lastName', 'email', 'password'])} className="mt-2 bg-main-300">Next</Button>
+          <Button onClick={() => handleNextStep(['firstName', 'lastName', 'email', 'password'])} className="mt-2 " variant='outlined' size='sm'>Next</Button>
         </div>
       </>)}
 
@@ -310,8 +312,8 @@ function SignupForm({ handleNext, handlePrev, activeStep, setActiveStep }) {
         </div>
 
         <div className='flex justify-between'>
-          <Button onClick={handlePrevStep} className="mt-2 bg-gray-400">Previous</Button>
-          <Button onClick={() => handleNextStep(['GOV', 'sex'])} className="mt-2 bg-main-300">Next</Button>
+          <Button onClick={handlePrevStep} className="mt-2 " variant='outlined' size='sm' >Previous</Button>
+          <Button onClick={() => handleNextStep(['GOV', 'sex','city'])} className="mt-2 " variant='outlined' size='sm'>Next</Button>
         </div>
       </>)}
 
@@ -413,21 +415,14 @@ function SignupForm({ handleNext, handlePrev, activeStep, setActiveStep }) {
 
         <div className='flex justify-between'>
           {isLoading ? <>
-            <Button onClick={handlePrevStep} disabled={true} className="mt-2 bg-gray-400">Previous</Button>
-            <Button type="submit" loading={isLoading} className="flex justify-center items-center text-center mt-2 bg-main-300">Submit</Button>
-          </> : <><Button onClick={handlePrevStep} className="mt-2 bg-gray-400">Previous</Button>
-            <Button type="submit" className="mt-2 bg-main-300">Submit</Button></>}
+            <Button onClick={handlePrevStep} disabled={true} className="mt-2 "  variant='outlined' size='sm' >Previous</Button>
+            <Button type="submit" loading={isLoading} className="flex justify-center items-center text-center mt-2 bg-main-100">Submit</Button>
+          </> : <><Button onClick={handlePrevStep} className="mt-2 "  variant='outlined' size='sm' >Previous</Button>
+            <Button type="submit" className="mt-2 bg-main-100">Submit</Button></>}
 
         </div>
 
       </>)}
-
-
-
-
-
-
-      {/* {isLoading ? <Button type="submit" loading={isLoading} className="flex justify-center items-center text-center mt-2">Loading</Button> : <Button type="submit" className="mt-2 bg-main-300">Submit</Button>} */}
 
     </form>
   )
