@@ -2,16 +2,25 @@ import { AppError, catchAsyncError } from "../../../utilies/error.js";
 import { lectureModel } from "../models/lecture.model.js";
 import { videoModel } from "../models/videos.model.js";
 import { v2 as cloudinary } from 'cloudinary';
-
-
+import LectureService from "../service/lecture.service.js";
 
 
 
 export const addLecture = catchAsyncError(async (req, res, next) => {
 
 
-  console.log(req.file.path);
-  
+
+  console.log(req.files.logo[0].buffer);
+  try {
+    const { logo } = req.files
+    const { profilePictureUrl, publicId } = await LectureService.uploadLogo(logo[0])
+    console.log({ profilePictureUrl, publicId });
+
+  } catch (error) {
+    console.log(error);
+
+  }
+
   // console.log(req.files);
 
   // let { code } = req.body
@@ -51,9 +60,9 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
   //     video = uploadedResponse.secure_url;
   //     const public_id = uploadedResponse.public_id;
   //   } catch (error) {
-  //     console.log(error.message);
-  //     return res.status(400).json({ error: "Can't upload video" });
+  //     console.log(error.message);Can't upload video" });
   //   }
+  //     return res.status(400).json({ error: "
   // }
 
 

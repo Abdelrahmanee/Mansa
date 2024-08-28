@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import otpGenerator from 'otp-generator';
 
 export const sendEmailVerfication = async (email, options = {}) => {
+	
 	const { otp, link } = options;
 
 	let message = '';

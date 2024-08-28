@@ -18,3 +18,6 @@ const upload = multer({ storage, fileFilter });
 export const uploadSingle = (fieldName) => {
     return upload.single(fieldName);
 };
+export const uploadMultiple = (fields) => {
+    return upload.fields(fields);
+};
