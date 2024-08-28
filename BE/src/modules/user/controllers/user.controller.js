@@ -4,6 +4,12 @@ import cloudinary from 'cloudinary';
 import { userModel } from "../models/user.model.js";
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
 import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
+import { extractPublicId } from 'cloudinary-build-url'
+
+import mongoose, { startSession } from 'mongoose';
+import dotenv from 'dotenv'
+dotenv.config()
+const defaultProfilePictureUrl = process.env.DEFAULT_PROFILE_PICTURE_URL
 
 // update account.
 export const updateAccount = catchAsyncError(async (req, res, next) => {
@@ -63,6 +69,9 @@ export const updateAccount = catchAsyncError(async (req, res, next) => {
 
 export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
     // Check if a file was uploaded
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
     if (!req.file) {
         return next(new AppError('No file uploaded', 400));
     }
@@ -79,24 +88,27 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
         return next(new AppError('User not found', 404));
     }
 
-    // Extract the public ID from the old profile picture URL and delete it from Cloudinary
-    const oldProfilePictureUrl = user.profilePicture;
-    if (oldProfilePictureUrl) {
-        const regex = /\/upload\/(?:v[0-9]+\/)?([^/.]+\/[^/.]+)(?=\.[^.]+$)/;
-        const match = oldProfilePictureUrl.match(regex);
 
-        if (match && match[1]) {
-            const oldPublicId = match[1];
+    const oldProfilePictureUrl = user.profilePicture;
+    if (oldProfilePictureUrl && oldProfilePictureUrl !== defaultProfilePictureUrl) {
+        const oldPublicId = extractPublicId(user.profilePicture);
+
+        if (oldPublicId) {
             try {
-                await cloudinary.v2.uploader.destroy(oldPublicId);
+                const cloudinaryResult = await cloudinary.uploader.destroy(oldPublicId);
+
+                if (cloudinaryResult.result !== 'ok') {
+                    throw new AppError('Cloudinary deletion failed' , 500);
+                }
             } catch (error) {
-                console.error('Error removing old image from Cloudinary:', error);
+                // If the Cloudinary deletion fails, abort the MongoDB transaction
+                console.error('Error deleting Cloudinary image:', error);
+                await session.abortTransaction(); // Abort the transaction
+                session.endSession();
+                return next(new AppError('Failed to delete user account due to external service failure', 500)); // Pass the error to the global error handler
             }
-        } else {
-            console.log('No public ID found for old image.');
         }
     }
-
 
 
     // Upload the new profile picture to Cloudinary
@@ -108,6 +120,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
                 (error, result) => {
                     if (error) {
                         reject(new AppError('Error uploading image to Cloudinary', 500));
+                       
                     } else {
                         resolve(result);
                     }
@@ -117,6 +130,8 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
 
         newProfilePictureUrl = uploadResponse.secure_url;
     } catch (error) {
+        await session.abortTransaction(); // Abort the transaction
+        session.endSession();
         return next(new AppError('Error uploading image to Cloudinary', 500));
     }
 
@@ -129,6 +144,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
         user
     });
 });
+
 
 
 
@@ -157,16 +173,63 @@ export const updateAccountEmail = catchAsyncError(async (req, res, next) => {
     })
 })
 
+
 // Delete account
-
 export const deleteAccount = catchAsyncError(async (req, res, next) => {
-    const { _id } = req.user
-    if (!_id) { return next(new AppError('User not found', 404)) };
+    const { _id: userId } = req.user; // Assuming the user ID is passed as a URL parameter
 
-    await userModel.findByIdAndDelete(_id)
-    res.status(200).json({ status: "success", message: "Account is deleted" })
-})
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
+    try {
+        // Find the user within the transaction
+        const user = await userModel.findById(userId).session(session);
+        if (!user) {
+            throw new AppError('User not found', 404);
+        }
+
+        // Handle Cloudinary deletion for the user's profile picture
+        if (user.profilePicture && user.profilePicture !== defaultProfilePictureUrl) {
+            const publicId = extractPublicId(user.profilePicture);
+            console.log("publicId");             
+
+            if (publicId) {
+                try {
+                    const cloudinaryResult = await cloudinary.uploader.destroy(publicId);
+
+                    if (cloudinaryResult.result !== 'ok') {
+                        throw new Error('Cloudinary deletion failed');
+                    }
+
+                } catch (error) {
+                    // If the Cloudinary deletion fails, abort the MongoDB transaction
+                    console.error('Error deleting Cloudinary image:', error);
+                    await session.abortTransaction(); // Abort the transaction
+                    session.endSession();
+                    return next(new AppError('Failed to delete user account due to external service failure', 500)); // Pass the error to the global error handler
+                }
+            }
+        }
+
+        // Proceed to delete the user from the database
+        await userModel.findByIdAndDelete(userId).session(session);
+
+        // Commit the transaction if everything succeeded
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({
+            status: 'success',
+            message: 'User deleted successfully',
+        });
+
+    } catch (error) {
+        // In case of any error, abort the transaction and end the session
+        await session.abortTransaction();
+        session.endSession();
+        return next(error); // Pass error to global error handler
+    }
+});
 // Get user account data 
 export const userInfo = catchAsyncError(async (req, res, next) => {
     const { _id } = req.user

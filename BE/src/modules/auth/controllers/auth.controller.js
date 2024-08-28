@@ -2,111 +2,108 @@ import jwt from "jsonwebtoken";
 import { v4 as uuid4 } from 'uuid';
 import cloudinary from 'cloudinary';
 import { userModel } from "../../user/models/user.model.js";
-import { sendEmailVerfication } from "../../../utilies/email.js";
+// import { sendEmailVerfication } from "../../../utilies/email.js";
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
+import AuthService from '../service/auth.service.js'
+import mongoose from "mongoose";
 
 
 
 
 
 export const login = catchAsyncError(async (req, res, next) => {
+    const user = req.user;
 
-    const { email, userName, role, sex, status, age, mobileNumber, _id } = req.user
+    // Check if the user is blocked
+    await AuthService.checkUserBlocked(user);
 
-    if (req.user.status === 'blocked') return next(new AppError("you have been blocked , contact us", 403))
-    const token = jwt.sign({ email, sex, userName, role, status, age, mobileNumber, _id }, process.env.SECRET_KEY)
-    req.user.status = 'online'
-    req.user.isLoggedOut = false
-    await req.user.save();
+    // Generate JWT token
+    const token = await AuthService.generateToken(user);
 
-    res.cookie('authToken', token, {
-        httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie
-        secure: process.env.NODE_ENV === 'production',  // Sends cookie over HTTPS only
-        sameSite: 'strict',  // Prevents CSRF
-        maxAge: 24 * 60 * 60 * 1000  // Cookie expiration in milliseconds (e.g., 1 day)
-    });
+    // Update user login status to "online"
+    await AuthService.updateUserLoginStatus(user);
 
+    // Set the token in cookies
+    AuthService.setCookie(res, token);
+
+    // Send response with user data
     res.status(200).json({
         status: 'success',
-        message: "Signed in success", user: {
-            email: email.toLowerCase(),
-            userName : userName.toLowerCase(),
-            role: role.toLowerCase(),
-            status: status.toLowerCase(),
-            sex: sex.toLowerCase(),
-            age,
-            mobileNumber,
-            _id
-        }
-    })
-})
+        message: "Signed in successfully",
+        user: AuthService.formatUserResponse(user),
+        token
+    });
+});
 
 
 
 export const signup = catchAsyncError(async (req, res, next) => {
-    let profilePictureUrl = '';
-    let publicId = '';
+    const { email, mobileNumber } = req.body;
 
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        await AuthService.checkIfEmailExists(email);
+        await AuthService.checkIfMobileExists(mobileNumber);
+        AuthService.normalizeData(req.body);
+        const user = await AuthService.createUser(req.body, session);
+        user.isVerified = false; // Set as unverified initially
+        await session.commitTransaction();
+        session.endSession();
 
-    // Check if email or mobile number already exists
-    const isEmailExist = await userModel.findOne({
-        $or: [{ email: req.body.email }, { mobileNumber: req.body.mobileNumber }]
-    });
+        // Side effect: Send verification email
+        try {
+            let x = await AuthService.generateEmailVerificationToken(user.email);
+            console.log(x);
+            
+            user.emailSent = true; // Email sent successfully
+            
+        } catch (emailError) {
+            console.error("Failed to send verification email:", emailError);
+            user.emailSent = false; // Mark as email not sent
+            // Optionally: Log to an external service or notify an admin
+        }
 
-    if (isEmailExist) {
-        return next(new AppError('Please Try Another Email or Mobile number', 409));
-    }
+        // Save the emailSent flag status
+        await user.save();
 
-    // Check if file is uploaded
-    if (req.file) {
-        // Upload the image to Cloudinary
-        const uploadResponse = await new Promise((resolve, reject) => {
-            const stream = cloudinary.v2.uploader.upload_stream(
-                { folder: 'Mansa', public_id: uuid4() },
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(result);
-                    }
-                }
-            );
-            stream.end(req.file.buffer);
+        // Side effect: Upload profile picture
+        try {
+            const { profilePictureUrl, publicId } = await AuthService.uploadProfilePicture(req.file);
+            user.profilePicture = profilePictureUrl;
+        } catch (uploadError) {
+            console.error("Failed to upload profile picture:", uploadError);
+            // Assign a default profile picture URL
+            user.profilePicture = process.env.DEFAULT_PROFILE_PICTURE_URL;
+        }
+
+        // Save the profile picture (or the default picture)
+        await user.save();
+
+        res.status(201).json({
+            status: 'success',
+            message: user.emailSent ? 'User added successfully, please verify your email' : 'User added, but email verification failed. Please verify your email manually.',
+            data: user
         });
 
-        profilePictureUrl = uploadResponse.secure_url;
-        publicId = uploadResponse.public_id;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+
+        return next(new AppError(error.message, 400));
+        // return next(new AppError('Registration failed, please try again later', 500));
     }
 
-    // Attach profile picture URL to the request body
-    req.body.profilePicture = profilePictureUrl;
+
+    // Detailed error handling
 
 
 
-    // Generate email verification token and send verification email
-    const { email } = req.body;
-    const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY, { expiresIn: '1h' });
-    const link = `${process.env.BASE_URL}api/v1/auth/confirmEmail/${emailToken}`;
-    await sendEmailVerfication(email, { link });
 
-    for (const key in req.body) {
-        if (typeof req.body[key] === 'string') {
-            req.body[key] = req.body[key].toLowerCase();
-        }
-    }
+    // Generic error message
+    // return next(new AppError('Registration failed, please try again later', 500));
 
-    
-
-    // Create a new user
-    const user = await userModel.create(req.body);
-
-    res.status(201).json({
-        status: 'success',
-        message: 'User added successfully',
-        data: user
-    });
 });
-
 
 
 export const confirm_email = catchAsyncError(async (req, res, next) => {

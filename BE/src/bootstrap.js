@@ -24,7 +24,7 @@ export const bootstrap = (app) => {
       
     app.use(morgan('dev'))
 
-    cron();
+    // cron();
     
     app.use('/api/v1', v1Router)
 
