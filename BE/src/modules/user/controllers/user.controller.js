@@ -98,7 +98,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
                 const cloudinaryResult = await cloudinary.uploader.destroy(oldPublicId);
 
                 if (cloudinaryResult.result !== 'ok') {
-                    throw new Error('Cloudinary deletion failed');
+                    throw new AppError('Cloudinary deletion failed' , 500);
                 }
             } catch (error) {
                 // If the Cloudinary deletion fails, abort the MongoDB transaction
@@ -191,6 +191,7 @@ export const deleteAccount = catchAsyncError(async (req, res, next) => {
         // Handle Cloudinary deletion for the user's profile picture
         if (user.profilePicture && user.profilePicture !== defaultProfilePictureUrl) {
             const publicId = extractPublicId(user.profilePicture);
+            console.log("publicId");             
 
             if (publicId) {
                 try {

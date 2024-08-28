@@ -5,22 +5,32 @@ import mongoose from 'mongoose'
 
 
 const schema = new mongoose.Schema({
-    code: {
-        type: String,
-        required:true
-    },
+    codes: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        {
+            type: String,
+            required: true
+        }
+    ],
     pdf: {
         type: String,
-        required:true
+        required: true
     },
     video: {
         type: mongoose.Types.ObjectId,
-        ref:'Video',
-        required:true
+        ref: 'Video',
+        required: true
     },
     logo: {
         type: String,
-    }
+    },
+    subscribers: [
+        { user: mongoose.Types.ObjectId },
+    ]
 }, { timestamps: true }
 )
 
