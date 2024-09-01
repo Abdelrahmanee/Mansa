@@ -1,36 +1,31 @@
-
-
-
 import mongoose from 'mongoose'
 
-
 const schema = new mongoose.Schema({
-    codes: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: 'User',
-            required: true
-        },
-        {
-            type: String,
-            required: true
-        }
-    ],
-    pdf: {
+    title: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
-    video: {
+    description: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    teacherId: {
         type: mongoose.Types.ObjectId,
-        ref: 'Video',
-        required: true
+        ref: 'User'
     },
     logo: {
         type: String,
     },
-    subscribers: [
-        { user: mongoose.Types.ObjectId },
-    ]
+    // LectureVideo: {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: 'Video'
+    // },
+    // LecturePdf: {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: 'Pdf'
+    // }
 }, { timestamps: true }
 )
 
