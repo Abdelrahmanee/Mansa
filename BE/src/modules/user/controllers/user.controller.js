@@ -1,13 +1,12 @@
 import jwt from 'jsonwebtoken'
 import { v4 as uuid4 } from 'uuid';
 import cloudinary from 'cloudinary';
-import { userModel } from "../models/user.model.js";
-import { AppError, catchAsyncError } from "../../../utilies/error.js";
-import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
 import { extractPublicId } from 'cloudinary-build-url'
-
+import { userModel } from "../models/user.model.js";
 import mongoose, { startSession } from 'mongoose';
 import dotenv from 'dotenv'
+import { AppError, catchAsyncError } from "../../../utilies/error.js";
+import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
 dotenv.config()
 const defaultProfilePictureUrl = process.env.DEFAULT_PROFILE_PICTURE_URL
 

@@ -61,7 +61,6 @@ export const signup = catchAsyncError(async (req, res, next) => {
         } catch (emailError) {
             console.error("Failed to send verification email:", emailError);
             user.emailSent = false; // Mark as email not sent
-            // Optionally: Log to an external service or notify an admin
         }
 
         // Save the emailSent flag status
