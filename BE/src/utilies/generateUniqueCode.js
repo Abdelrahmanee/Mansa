@@ -1,5 +1,12 @@
-import crypto from 'crypto';
+
+
+import otpGenerator from 'otp-generator';
 
 export const generateUniqueCode = () => {
-  return crypto.randomBytes(6).toString('hex').toUpperCase(); // Generate a random 12-character code
+	return otpGenerator.generate(12, {
+		digits: true,
+		upperCaseAlphabets: false,
+		specialChars: false,
+		lowerCaseAlphabets: true,
+	});
 };

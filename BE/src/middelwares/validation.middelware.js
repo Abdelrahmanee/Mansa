@@ -14,8 +14,10 @@ export const validate = (schema) => {
             { abortEarly: false }
         )
         if (error) {
+            console.log(error);
+            
             throw new AppError(
-                error.details.map((d) => d.message),
+                error.details.map((d) => d.message.split('"').join('')),
                 400
             )
         }
