@@ -31,7 +31,6 @@ export const login = catchAsyncError(async (req, res, next) => {
         status: 'success',
         message: "Signed in successfully",
         user: AuthService.formatUserResponse(user),
-        token
     });
 });
 
@@ -54,7 +53,6 @@ export const signup = catchAsyncError(async (req, res, next) => {
         // Side effect: Send verification email
         try {
             let x = await AuthService.generateEmailVerificationToken(user.email);
-            console.log(x);
             
             user.emailSent = true; // Email sent successfully
             
