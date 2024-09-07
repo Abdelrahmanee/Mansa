@@ -106,7 +106,11 @@ class AuthService {
             status: user.status.toLowerCase(),
             sex: user.sex.toLowerCase(),
             age: user.age,
+            profilePicture: user.profilePicture,
             mobileNumber: user.mobileNumber,
+            city: user.city,
+            GOV: user.GOV,
+            DOB: user.DOB,
             _id: user._id
         };
     }
