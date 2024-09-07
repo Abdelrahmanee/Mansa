@@ -5,26 +5,27 @@ import LectureService from "../service/lecture.service.js";
 import mongoose from "mongoose";
 import lectureService from "../service/lecture.service.js";
 import { generateUniqueCode } from "../../../utilies/generateUniqueCode.js";
+import path from 'path'
+import { fileURLToPath } from 'url';
+import { deleteFileFromDisk } from "../../../utilies/removeFile.js";
 
+
+// Get the equivalent of __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 export const addLecture = catchAsyncError(async (req, res, next) => {
 
-
-
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-
     if (!req.user) throw new AppError("you must be logged in", 498)
-
     // Create the lecture document without the logo first
     const lectureData = { ...req.body, teacherId: req.user._id };
     const lecture = await lectureService.createLecture(lectureData, session);
 
-
     // if (!req.file) throw new AppError('No file uploaded', 400)
-
     const { logoURL } = await LectureService.uploadLogo(req.files.logo[0], lecture._id)
 
     if (!logoURL) throw new AppError('Logo not found', 404)
@@ -42,6 +43,13 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
       // Extract video URLs and update the lecture
       const videoURLs = videoUploadResults.map(result => result.videoURL);
       lecture.videos = videoURLs;
+
+      req.files.videos.forEach(file => {
+        const filePath = path.join(__dirname, '..', file.path);
+        console.log(filePath);
+        
+        deleteFileFromDisk(filePath);
+      });
     }
 
     // Upload PDFs if provided
@@ -52,10 +60,14 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
       const pdfUploadResults = await Promise.all(pdfPromises);
 
       // Extract PDF URLs and update the lecture
-      console.log(pdfUploadResults);
       const pdfURLs = pdfUploadResults.map(result => result.PDFURL);
 
       lecture.pdfs = pdfURLs;
+
+      req.files.pdfs.forEach(file => {
+        const filePath = path.join(__dirname, '..', file.path);
+        deleteFileFromDisk(filePath);
+      });
     }
     await lecture.save({ session });
 
