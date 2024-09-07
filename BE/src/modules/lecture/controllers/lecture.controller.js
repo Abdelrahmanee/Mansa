@@ -1,6 +1,5 @@
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
 import { lectureModel } from "../models/lecture.model.js";
-import { videoModel } from "../models/videos.model.js";
 import { v2 as cloudinary } from 'cloudinary';
 import LectureService from "../service/lecture.service.js";
 import mongoose from "mongoose";
@@ -10,6 +9,8 @@ import { generateUniqueCode } from "../../../utilies/generateUniqueCode.js";
 
 
 export const addLecture = catchAsyncError(async (req, res, next) => {
+
+
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -22,14 +23,40 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
     const lecture = await lectureService.createLecture(lectureData, session);
 
 
-    if (!req.file) throw new AppError('No file uploaded', 400)
+    // if (!req.file) throw new AppError('No file uploaded', 400)
 
-    const { logoURL, publicId } = await LectureService.uploadLogo(req.file)
+    const { logoURL } = await LectureService.uploadLogo(req.files.logo[0], lecture._id)
 
     if (!logoURL) throw new AppError('Logo not found', 404)
 
     // Update the lecture document with the logo URL if the upload was successful
     lecture.logo = logoURL;
+
+    // Upload videos if provided
+    if (req.files && req.files.videos) {
+      const videoPromises = req.files.videos.map(file =>
+        LectureService.uploadVideo(file, lecture._id)
+      );
+      const videoUploadResults = await Promise.all(videoPromises);
+
+      // Extract video URLs and update the lecture
+      const videoURLs = videoUploadResults.map(result => result.videoURL);
+      lecture.videos = videoURLs;
+    }
+
+    // Upload PDFs if provided
+    if (req.files && req.files.pdfs) {
+      const pdfPromises = req.files.pdfs.map(file =>
+        LectureService.uploadPDF(file, lecture._id)
+      );
+      const pdfUploadResults = await Promise.all(pdfPromises);
+
+      // Extract PDF URLs and update the lecture
+      console.log(pdfUploadResults);
+      const pdfURLs = pdfUploadResults.map(result => result.PDFURL);
+
+      lecture.pdfs = pdfURLs;
+    }
     await lecture.save({ session });
 
 
@@ -71,7 +98,7 @@ export const getLectureById = catchAsyncError(async (req, res, next) => {
 
     const lecture = await lectureService.getLecture(lectureId)
 
-    if(!lecture) throw new AppError('lecture not found', 404)
+    if (!lecture) throw new AppError('lecture not found', 404)
 
     res.status(200).json({
       status: "success",
@@ -110,6 +137,12 @@ export const generateLectureCode = catchAsyncError(async (req, res, next) => {
 })
 
 
+export const deleteLecture = catchAsyncError((req, res, next) => {
+
+  const { lectureId } = req.params
+})
+
+
 
 export const accessLecture = catchAsyncError(async (req, res, next) => {
   try {
@@ -121,33 +154,40 @@ export const accessLecture = catchAsyncError(async (req, res, next) => {
     if (studentLecture) {
       // If the student has permanent access, allow access
       if (studentLecture.hasPermanentAccess) {
-        return res.status(200).json({ message: "Already have Access ." });
+        return res.status(200).json({ status: "fail", message: "Already have Access ." });
       }
     }
 
-    // If the studentLecture does not exist or permanent access is not granted, verify the code
-    const accessCode = await lectureService.getAccess({ lectureId, code, isUsed: false })
+    // If the code is generated
+    const codeIsGenerated = await lectureService.checkCodeIsGenerated({ lectureId, code })
 
-    if (!accessCode) {
-      return res.status(403).json({ message: "Invalid or already used code." });
+    if (!codeIsGenerated) {
+      return res.status(403).json({ status: "fail", message: "Invalid code" });
+    }
+    // If the studentLecture does not exist or permanent access is not granted, verify the code
+    const codeIsNotAccessed = await lectureService.checkCodeIsAccessed({ lectureId, code, isUsed: false })
+    console.log(codeIsNotAccessed);
+
+    if (!codeIsNotAccessed) {
+      return res.status(403).json({ status: "fail", message: "Code is already Accessed" });
     }
 
     // Mark the code as used
-    accessCode.isUsed = true;
-    await accessCode.save();
+    codeIsNotAccessed.isUsed = true;
+    await codeIsNotAccessed.save();
 
     // Record the student's access and grant permanent access
     if (!studentLecture) {
       const data = {
         studentId,
         lectureId,
-        accessCodeId: accessCode._id,
+        accessCodeId: codeIsNotAccessed._id,
         hasPermanentAccess: true,
       }
 
       await lectureService.linkStudentWithLecture(data);
     } else {
-      await lectureService.updateStudentLecture({ studentLecture, accessCodeID: accessCode._id });
+      await lectureService.updateStudentLecture({ studentLecture, accessCodeID: codeIsNotAccessed._id });
     }
 
     return res.status(200).json({ message: "Access Approved." });

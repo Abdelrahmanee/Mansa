@@ -22,10 +22,8 @@ const schema = new mongoose.Schema({
     //     type: mongoose.Types.ObjectId,
     //     ref: 'Video'
     // },
-    // LecturePdf: {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: 'Pdf'
-    // }
+    pdfs: [],
+    videos: [],
 }, { timestamps: true }
 )
 

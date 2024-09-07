@@ -6,6 +6,7 @@ import { AppError } from '../../../utilies/error.js';
 import { userModel } from '../../user/models/user.model.js';
 import { sendEmailVerfication } from '../../../utilies/email.js';
 class AuthService {
+    
     // Belongs to registerion
     async checkIfEmailExists(email) {
         const isEmailExist = await userModel.findOne({ email });

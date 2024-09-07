@@ -14,9 +14,11 @@ const diskStorage = multer.diskStorage({
     }
   },
   filename: function (req, file, cb) {
+    
     cb(null, `${Date.now()}-${path.basename(file.originalname)}`);
   }
 });
+
 
 // Custom storage engine
 const customStorage = {
@@ -39,8 +41,8 @@ const customStorage = {
 // File filter to validate file types
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image') ||
-      file.mimetype.startsWith('video') ||
-      file.mimetype.startsWith('application/pdf')) {
+    file.mimetype.startsWith('video') ||
+    file.mimetype.startsWith('application/pdf')) {
     cb(null, true);
   } else {
     cb(new AppError('Invalid file type. Only images, videos, and PDFs are allowed.', 403), false);
@@ -48,15 +50,20 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
+  
   storage: customStorage,
   fileFilter,
 });
 
+
 // Usage example
 export const uploadSingle = (fieldName) => {
-    return upload.single(fieldName);
+  return upload.single(fieldName);
 };
 
-export const uploadMultiple = (fields) => {
-    return upload.fields(fields);
+export const uploadMultiple = (fields) => {  
+  
+  return upload.fields(fields);
+
 };
+
