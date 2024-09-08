@@ -63,7 +63,7 @@ function Navbar() {
         {isAuthenticated ?
           <Button
             onClick={handleLogout}
-            className='hover:bg-red-700 hover:text-white transition-all duration-300'>Logout </Button>
+            danger>Logout </Button>
           : <>
             <Link to='/login' >
               <Button >Login </Button>

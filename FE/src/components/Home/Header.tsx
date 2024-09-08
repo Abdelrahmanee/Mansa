@@ -1,10 +1,10 @@
-import landing from '../../Assets/landing5.png'
+import landing from '../../Assets/landing1.png'
 
 export const Header = () => {
   return (
     <>
 
-      <div className='h-[80vh]  w-full md:px-10 md:pe-0 flex flex-col-reverse md:flex-row justify-between items-center'>
+      <div className='min-h-[80vh] w-full md:px-10 md:pe-0 flex flex-col-reverse md:flex-row justify-between items-center'>
       <div className="area">
         <ul className="circles">
           <li></li>
@@ -34,7 +34,7 @@ export const Header = () => {
           </a>
         </div>
         <div className='md:w-1/2'>
-          <img src={landing} alt='mansa' className='w-full' />
+          <img  src={landing} alt='mansa' className='w-full h-full' />
         </div>
       </div>
     </>
