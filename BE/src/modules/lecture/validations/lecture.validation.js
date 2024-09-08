@@ -41,9 +41,9 @@ export const addLectureSchema = Joi.object({
     query: {},
     file: Joi.object().optional(),  // Allow single file (e.g., logo)
     files: Joi.object({             // Define the structure of the 'files' field
-        logo: Joi.array().items(Joi.object()).optional(),
-        pdfs: Joi.array().items(Joi.object()).optional(),
-        videos: Joi.array().items(Joi.object()).optional(),
+        logo: Joi.array().items(Joi.object()).required(),
+        pdfs: Joi.array().items(Joi.object()).required(),
+        videos: Joi.array().items(Joi.object()).required(),
     }).optional(),
 })
 

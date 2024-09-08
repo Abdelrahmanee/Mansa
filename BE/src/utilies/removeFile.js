@@ -1,16 +1,14 @@
-
-
 import fs from 'fs'
-export const removeFile = (filePath) => {
-    return new Promise((resolve, reject) => {
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                console.error('Error removing file:', err);
-                reject(err);
-            } else {
-                console.log('Old profile picture file removed:', filePath);
-                resolve();
-            }
-        });
+// Function to delete file from disk
+export const deleteFileFromDisk = (filePath) => {
+    const correctedPath = filePath.replace('\\src\\modules\\lecture', '');
+    console.log(correctedPath);
+    
+    fs.unlink(correctedPath, (err) => {
+        if (err) {
+            console.error(`Error removing file: ${err}`);
+        } else {
+            console.log(`File deleted successfully: ${filePath}`);
+        }
     });
 };

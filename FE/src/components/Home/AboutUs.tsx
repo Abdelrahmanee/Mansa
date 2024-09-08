@@ -14,7 +14,7 @@ export const AboutUs = () => {
             >About Us
             </h1>
             <div className='w-3/4 h-1/3 bg-secondary-200 absolute top-[65%]
-          left-[12.5%] -z-10'></div>
+          left-[0%] -z-10'></div>
           </div>
           <p className=' text-gray-600'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur ducimus ipsum esse soluta illum amet quam necessitatibus rem quas a debitis porro, totam aperiam ad! Fuga accusantium odit ad! Ea?</p>
 

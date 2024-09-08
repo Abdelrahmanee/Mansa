@@ -2,6 +2,8 @@ import { Header } from './Header'
 import { MainFeature } from './MainFeature'
 import NewsLatter from './NewsLetter'
 import { AboutUs } from './AboutUs'
+import Cards from './Cards'
+
 
 
 function Home() {
@@ -9,8 +11,10 @@ function Home() {
     <>
     <Header />
     <MainFeature />
+    <Cards />
     <AboutUs />
     <NewsLatter />
+
     </>
   )
 }

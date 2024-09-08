@@ -7,6 +7,8 @@ import videoRepository from "../repos/video.repository.js";
 import pdfRepository from "../repos/pdf.repository.js";
 import { AppError } from "../../../utilies/error.js";
 import logoRepository from "../repos/logo.repository.js";
+
+
 class LectureService {
 
     async uploadLogo(logo, lectureId) {
