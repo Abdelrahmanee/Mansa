@@ -1,10 +1,7 @@
 import { authenticate, authorize } from "../../auth/middelwares/auth.middelware.js";
-
 import { Router } from "express";
 import { validate } from "../../../middelwares/validation.middelware.js";
-import { ROLES } from "../../../utilies/enums.js";
 import { uploadMultiple, uploadSingle } from "../../../middelwares/upload.middelware.js";
-import { validateFields } from "../../../middelwares/validateFields.js";
 import { addLectureSchema, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
 import { accessLecture, addLecture, deleteLecture, generateLectureCode, getLectureById } from "../controllers/lecture.controller.js";
 
@@ -39,7 +36,7 @@ router.post('/generate_Access_code',
 )
 
 
-router.post('/lecture_access_request',
+router.get('/lecture_access_request',
     authenticate,
     authorize('teacher', 'student'),
     validate(lectureAccessRequest),

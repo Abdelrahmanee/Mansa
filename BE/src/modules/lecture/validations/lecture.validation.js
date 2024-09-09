@@ -86,8 +86,8 @@ export const lectureAccessRequest = Joi.object({
                 'string.pattern.base': `Lecture ID must be a valid ObjectId`,
             }),
         code: Joi.string()
-            .regex(/^[a-z0-9]{12}$/)
-            .required()
+            .regex(/^[A-Za-z0-9]{12}$/)
+            .optional()
             .messages({
                 'string.pattern.base': `"Invalid code", code must be exactly 12 characters long, containing only lowercase letters (a-z) and digits (0-9). `,
             }),

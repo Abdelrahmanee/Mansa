@@ -47,7 +47,7 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
       req.files.videos.forEach(file => {
         const filePath = path.join(__dirname, '..', file.path);
         console.log(filePath);
-        
+
         deleteFileFromDisk(filePath);
       });
     }
@@ -158,16 +158,25 @@ export const deleteLecture = catchAsyncError((req, res, next) => {
 
 export const accessLecture = catchAsyncError(async (req, res, next) => {
   try {
-    const { studentId } = req.user._id
+    const studentId = req.user._id
     const { lectureId, code } = req.body;
+
+
 
     const studentLecture = await lectureService.hasAccess({ studentId, lectureId })
 
     if (studentLecture) {
       // If the student has permanent access, allow access
       if (studentLecture.hasPermanentAccess) {
-        return res.status(200).json({ status: "fail", message: "Already have Access ." });
+        return res.status(200).json({ status: "success", message: "Already have Access ." });
       }
+    }
+
+
+    // If the student doesn't have permanent access, then require the code
+    if (!code) {
+      // If no code is provided, return an error since they don't have access
+      return res.status(400).json({ status: "fail", message: "Access code is required." });
     }
 
     // If the code is generated
@@ -178,10 +187,9 @@ export const accessLecture = catchAsyncError(async (req, res, next) => {
     }
     // If the studentLecture does not exist or permanent access is not granted, verify the code
     const codeIsNotAccessed = await lectureService.checkCodeIsAccessed({ lectureId, code, isUsed: false })
-    console.log(codeIsNotAccessed);
 
     if (!codeIsNotAccessed) {
-      return res.status(403).json({ status: "fail", message: "Code is already Accessed" });
+      return res.status(403).json({ status: "fail", message: "Code is already Used" });
     }
 
     // Mark the code as used

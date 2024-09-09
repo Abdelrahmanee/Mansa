@@ -28,3 +28,14 @@ export const login = async (data: {
   const res = await axios.post(`${baseUrl}/auth/login`, data);
   return res.data;
 };
+
+
+const checkStudentAccess = async (lectureId: string, accessCode: string) => {
+  const response = await axios.post(`${baseUrl}/lectures/lecture_access_request`, {
+    accessCode
+  });
+  return response.data;  // Assuming the API responds with some data about access
+};
+
+export { checkStudentAccess };
+
