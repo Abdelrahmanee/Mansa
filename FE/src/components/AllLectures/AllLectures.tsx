@@ -4,12 +4,12 @@ import Meta from 'antd/es/card/Meta';
 import { useNavigate } from 'react-router-dom';
 import useLectures from '../../Hooks/useLecutres';
 
-const Cards: React.FC = () => {
+const AllLectures: React.FC = () => {
 
 
 
   const navigate = useNavigate()
-  const { data, isLoading ,isError} = useLectures()
+  const { data, isLoading ,isError} = useLectures();
 
   if (isError) {
     return <div>Error...</div>;
@@ -30,7 +30,7 @@ const Cards: React.FC = () => {
         <div className='relative w-fit mx-auto md:mx-0'>
           <h1
             className='relative font-Acme font-bold font-QuickStand text-4xl  mb-5 pb-0  text-shadow text-black'
-          >Features Courses
+          >All Courses
           </h1>
           <div className='w-3/4 h-1/4 bg-secondary-200 absolute top-[35%]
           left-[12.5%] -z-10'></div>
@@ -38,11 +38,11 @@ const Cards: React.FC = () => {
       </div>
       <Row gutter={[16, 16]}>
         {data?.data.slice(0, 6).map((lecture, index) => (
-          <Col lg={8} sm={12} xs={24} key={lecture._id}>
+          <Col lg={8} sm={24} xs={24} key={lecture._id}>
             {index === 0 || index === 2 ? (
               <Badge.Ribbon text="Best Seller">
                 <Card bordered={true} className="hover:shadow transition-all duration-300" cover={<img alt="example" src={lecture.logo} />}>
-                  <Meta title={lecture.title} description={lecture.description} />
+                  <Meta title={lecture.title}  description={lecture.description} />
                   <div className="flex justify-between items-center mt-3 font-Roboto">
                     <p>{lecture.duration}hrs</p>
                     <p className="text-blue-500 text-lg">{formatPrice(lecture.price)}</p>
@@ -68,4 +68,4 @@ const Cards: React.FC = () => {
   </>
 }
 
-export default Cards;
+export default AllLectures;

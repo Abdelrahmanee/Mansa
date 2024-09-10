@@ -17,6 +17,8 @@ import { LecturePDFs } from './components/Lectures/LecturePDFs'
 import LectureDetials from './components/Lectures/LectureDetials'
 import { LectureRoute } from './components/Lectures/LectureRoute'
 import { AccessCode } from './components/AccessCode/AccessCode'
+import AllLectures from './components/AllLectures/AllLectures'
+import { Contactus } from './components/ContactUs/Contactus'
 
 const queryClient = new QueryClient()
 
@@ -29,6 +31,8 @@ function App() {
         { path: '', element: <PrivateRoute><Home /></PrivateRoute> },
         { path: 'signup', element: <Signup /> },
         { path: 'login', element: <Login /> },
+        { path: 'AllLectures', element: <PrivateRoute><AllLectures /></PrivateRoute> },
+        { path: 'contact', element:<PrivateRoute> <Contactus /></PrivateRoute> },
         {
           path: 'lecture/:lectureId',
           element: <LectureRoute />,  
