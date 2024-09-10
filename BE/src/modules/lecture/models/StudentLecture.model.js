@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const schema = new mongoose.Schema({
   studentId: {
     type: mongoose.Types.ObjectId,
-    ref: 'Student'
+    ref: 'User'
   },
   lectureId: {
     type: mongoose.Types.ObjectId,

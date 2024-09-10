@@ -93,7 +93,6 @@ class AuthService {
         // Set the cookie with the auth token
         res.cookie('authToken', token, {
             httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-            secure: process.env.NODE_ENV === 'production', // Sends cookie over HTTPS only
             sameSite: 'strict', // Prevents CSRF
             maxAge: 24 * 60 * 60 * 1000 // Cookie expiration in milliseconds (e.g., 1 day)
         });

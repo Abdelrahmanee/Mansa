@@ -18,10 +18,22 @@ const schema = new mongoose.Schema({
     logo: {
         type: String,
     },
-    // LectureVideo: {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: 'Video'
-    // },
+    price:{
+        type: Number,
+        required: true,
+        default: 100
+    },
+    duration: {
+        type: Number,
+        required: true,
+        default: 5
+    },
+    rating: {
+        type: Number,
+        max: 5,
+        required: true,
+        default: 0
+    },
     pdfs: [],
     videos: [],
 }, { timestamps: true }

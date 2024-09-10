@@ -7,6 +7,7 @@ import videoRepository from "../repos/video.repository.js";
 import pdfRepository from "../repos/pdf.repository.js";
 import { AppError } from "../../../utilies/error.js";
 import logoRepository from "../repos/logo.repository.js";
+import lectureRepository from "../repos/lecture.repository.js";
 
 
 class LectureService {
@@ -122,6 +123,10 @@ class LectureService {
 
     async getLecture(id) {
         return await lectureModel.findOne({ _id: id })
+    }
+
+    async getAllLectures() {
+        return lectureRepository.getAllLectures()
     }
 }
 export default new LectureService();

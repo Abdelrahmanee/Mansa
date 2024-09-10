@@ -14,11 +14,9 @@ const diskStorage = multer.diskStorage({
     }
   },
   filename: function (req, file, cb) {
-    
     cb(null, `${Date.now()}-${path.basename(file.originalname)}`);
   }
 });
-
 
 // Custom storage engine
 const customStorage = {
@@ -50,20 +48,16 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  
   storage: customStorage,
   fileFilter,
 });
 
-
-// Usage example
+// Usage for single file upload
 export const uploadSingle = (fieldName) => {
   return upload.single(fieldName);
 };
 
-export const uploadMultiple = (fields) => {  
-  
+// Usage for multiple file upload with specific field names
+export const uploadMultiple = (fields) => {
   return upload.fields(fields);
-
 };
-

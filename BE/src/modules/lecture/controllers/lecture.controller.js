@@ -47,7 +47,7 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
       req.files.videos.forEach(file => {
         const filePath = path.join(__dirname, '..', file.path);
         console.log(filePath);
-        
+
         deleteFileFromDisk(filePath);
       });
     }
@@ -154,60 +154,174 @@ export const deleteLecture = catchAsyncError((req, res, next) => {
   const { lectureId } = req.params
 })
 
-
-
-export const accessLecture = catchAsyncError(async (req, res, next) => {
+export const checkStudentAccess = catchAsyncError(async (req, res, next) => {
   try {
-    const { studentId } = req.user._id
+    const studentId = req.user._id;
+    const { lectureId } = req.body;
+
+    // Check if the student already has access to the lecture
+    const studentLecture = await lectureService.hasAccess({ studentId, lectureId });
+
+    if (studentLecture && studentLecture.hasPermanentAccess) {
+      // If the student has permanent access, allow access
+      return res.status(200).json({
+        status: "success",
+        message: "Already have Access.",
+        hasAccess: true,
+      });
+    }
+
+    // If no permanent access, require code input
+    return res.status(400).json({
+      status: "fail",
+      message: "Access code is required.",
+      hasAccess: false,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 500));
+  }
+});
+
+export const grantStudentAccess = catchAsyncError(async (req, res, next) => {
+  try {
+    const studentId = req.user._id;
     const { lectureId, code } = req.body;
 
-    const studentLecture = await lectureService.hasAccess({ studentId, lectureId })
+    
 
-    if (studentLecture) {
-      // If the student has permanent access, allow access
-      if (studentLecture.hasPermanentAccess) {
-        return res.status(200).json({ status: "fail", message: "Already have Access ." });
-      }
+    // Check if the student has access (this check assumes no permanent access)
+    const studentLecture = await lectureService.hasAccess({ studentId, lectureId });
+
+    if (!code) {
+      // If no code is provided, return an error since they don't have access
+      return res.status(400).json({
+        status: "fail",
+        message: "Access code is required.",
+      });
     }
 
-    // If the code is generated
-    const codeIsGenerated = await lectureService.checkCodeIsGenerated({ lectureId, code })
-
+    // Check if the code is generated for this lecture
+    const codeIsGenerated = await lectureService.checkCodeIsGenerated({ lectureId, code });
     if (!codeIsGenerated) {
-      return res.status(403).json({ status: "fail", message: "Invalid code" });
+      return res.status(403).json({
+        status: "fail",
+        message: "Invalid code for this lecture",
+      });
     }
-    // If the studentLecture does not exist or permanent access is not granted, verify the code
-    const codeIsNotAccessed = await lectureService.checkCodeIsAccessed({ lectureId, code, isUsed: false })
-    console.log(codeIsNotAccessed);
 
+    // Check if the code is valid and hasn't been used
+    const codeIsNotAccessed = await lectureService.checkCodeIsAccessed({ lectureId, code, isUsed: false });
     if (!codeIsNotAccessed) {
-      return res.status(403).json({ status: "fail", message: "Code is already Accessed" });
+      return res.status(403).json({
+        status: "fail",
+        message: "Code is already used",
+      });
     }
 
     // Mark the code as used
     codeIsNotAccessed.isUsed = true;
     await codeIsNotAccessed.save();
 
-    // Record the student's access and grant permanent access
+    // Grant permanent access if it's the student's first time accessing the lecture
     if (!studentLecture) {
       const data = {
         studentId,
         lectureId,
         accessCodeId: codeIsNotAccessed._id,
         hasPermanentAccess: true,
-      }
-
+      };
       await lectureService.linkStudentWithLecture(data);
     } else {
-      await lectureService.updateStudentLecture({ studentLecture, accessCodeID: codeIsNotAccessed._id });
+      // Update the student's lecture record with the used code
+      await lectureService.updateStudentLecture({
+        studentLecture,
+        accessCodeID: codeIsNotAccessed._id,
+      });
     }
 
-    return res.status(200).json({ message: "Access Approved." });
-
-
-
+    return res.status(200).json({
+      status: "success",
+      message: "Access Approved.",
+    });
   } catch (error) {
+    return next(new AppError(error.message, 500));
+  }
+});
+
+
+
+// export const accessLecture = catchAsyncError(async (req, res, next) => {
+//   try {
+//     const studentId = req.user._id
+//     const { lectureId, code } = req.body;
+
+//     const studentLecture = await lectureService.hasAccess({ studentId, lectureId })
+
+//     if (studentLecture) {
+//       // If the student has permanent access, allow access
+//       if (studentLecture.hasPermanentAccess) {
+//         return res.status(200).json({ status: "success", message: "Already have Access ." ,hasAccess: true});
+//       }
+//     }
+
+
+//     // If the student doesn't have permanent access, then require the code
+//     if (!code) {
+//       // If no code is provided, return an error since they don't have access
+//       return res.status(400).json({ status: "fail", message: "Access code is required." ,hasAccess: false});
+//     }
+
+//     // If the code is generated
+//     const codeIsGenerated = await lectureService.checkCodeIsGenerated({ lectureId, code })
+
+//     if (!codeIsGenerated) {
+//       return res.status(403).json({ status: "fail", message: "Invalid code", hasAccess: false });
+//     }
+//     // If the studentLecture does not exist or permanent access is not granted, verify the code
+//     const codeIsNotAccessed = await lectureService.checkCodeIsAccessed({ lectureId, code, isUsed: false })
+
+//     if (!codeIsNotAccessed) {
+//       return res.status(403).json({ status: "fail", message: "Code is already Used" ,hasAccess: false});
+//     }
+
+//     // Mark the code as used
+//     codeIsNotAccessed.isUsed = true;
+//     await codeIsNotAccessed.save();
+
+//     // Record the student's access and grant permanent access
+//     if (!studentLecture) {
+//       const data = {
+//         studentId,
+//         lectureId,
+//         accessCodeId: codeIsNotAccessed._id,
+//         hasPermanentAccess: true,
+//       }
+
+//       await lectureService.linkStudentWithLecture(data);
+//     } else {
+//       await lectureService.updateStudentLecture({ studentLecture, accessCodeID: codeIsNotAccessed._id });
+//     }
+
+//     return res.status(200).json({status: 'success', message: "Access Approved." ,hasAccess: true});
+
+
+
+//   } catch (error) {
+//     return next(new AppError(error.message, 500))
+//   }
+
+// })
+
+
+export const getAllLectures = catchAsyncError(async (req, res, next) => {
+  try {
+    const lectures = await lectureService.getAllLectures()
+    res.status(200).json({
+      message: "success",
+      data: lectures
+    });
+  }
+  catch (error) {
     return next(new AppError(error.message, 500))
   }
-
 })

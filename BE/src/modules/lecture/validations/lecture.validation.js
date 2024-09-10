@@ -24,18 +24,9 @@ export const addLectureSchema = Joi.object({
                 'string.max': `Description should have a maximum length of {#limit}`,
                 'any.required': `Description is a required field`
             }),
-        // LectureVideo: Joi.string()
-        //     .regex(/^[0-9a-fA-F]{24}$/) 
-        //     .optional()
-        //     .messages({
-        //         'string.pattern.base': `Lecture Video must be a valid ObjectId`,
-        //     }),
-        // LecturePdf: Joi.string()
-        //     .regex(/^[0-9a-fA-F]{24}$/)
-        //     .optional()
-        //     .messages({
-        //         'string.pattern.base': `Lecture Pdf must be a valid ObjectId`,
-        //     })
+            price: Joi.number().required(),
+            duration : Joi.number().required(),
+            rating: Joi.number().max(5).required(),
     },
     params: {},
     query: {},
@@ -80,16 +71,29 @@ export const deleteLectureSchema = Joi.object({
 export const lectureAccessRequest = Joi.object({
     body: {
         lectureId: Joi.string()
-            .regex(/^[0-9a-fA-F]{24}$/)
+            .regex(/^[A-Za-z0-9]{24}$/)
             .required()
             .messages({
                 'string.pattern.base': `Lecture ID must be a valid ObjectId`,
             }),
         code: Joi.string()
-            .regex(/^[a-z0-9]{12}$/)
+            .regex(/^[A-Za-z0-9]{12}$/)
             .required()
             .messages({
                 'string.pattern.base': `"Invalid code", code must be exactly 12 characters long, containing only lowercase letters (a-z) and digits (0-9). `,
+            }),
+    },
+    params: {},
+    query: {}
+})
+
+export const checkingAccess = Joi.object({
+    body: {
+        lectureId: Joi.string()
+            .regex(/^[A-Za-z0-9]{24}$/)
+            .required()
+            .messages({
+                'string.pattern.base': `Lecture ID must be a valid ObjectId`,
             }),
     },
     params: {},

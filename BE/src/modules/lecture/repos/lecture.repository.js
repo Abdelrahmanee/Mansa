@@ -11,6 +11,10 @@ class LectureRepository {
         return await lectureModel.findById(lectureId)
     }
 
+    async getAllLectures(){
+        return await lectureModel.find()
+    }
+
 
 }
 

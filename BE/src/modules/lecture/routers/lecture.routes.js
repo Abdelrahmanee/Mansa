@@ -1,12 +1,10 @@
 import { authenticate, authorize } from "../../auth/middelwares/auth.middelware.js";
-
 import { Router } from "express";
 import { validate } from "../../../middelwares/validation.middelware.js";
-import { ROLES } from "../../../utilies/enums.js";
 import { uploadMultiple, uploadSingle } from "../../../middelwares/upload.middelware.js";
-import { validateFields } from "../../../middelwares/validateFields.js";
-import { addLectureSchema, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
-import { accessLecture, addLecture, deleteLecture, generateLectureCode, getLectureById } from "../controllers/lecture.controller.js";
+import { addLectureSchema, checkingAccess, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
+import { addLecture, checkStudentAccess, deleteLecture, generateLectureCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
+import { isLectureExists } from "../middlewares/lecture.middleware.js";
 
 
 const router = Router()
@@ -15,6 +13,8 @@ const router = Router()
 
 
 router.get('/getLectureByID', authenticate, validate(getLectureByIdSchema), getLectureById)
+
+router.get('/getAllLectures', authenticate, authorize('teacher', 'student'), getAllLectures)
 
 router.post('/add_lecture',
     authenticate,
@@ -35,6 +35,7 @@ router.post('/generate_Access_code',
     authenticate,
     authorize('teacher'),
     validate(generateAccessCode),
+    isLectureExists,
     generateLectureCode
 )
 
@@ -43,7 +44,16 @@ router.post('/lecture_access_request',
     authenticate,
     authorize('teacher', 'student'),
     validate(lectureAccessRequest),
-    accessLecture
+    isLectureExists,
+    grantStudentAccess
+)
+
+router.post('/check_student_access',
+    authenticate,
+    authorize('teacher', 'student'),
+    validate(checkingAccess),
+    isLectureExists,
+    checkStudentAccess
 )
 
 

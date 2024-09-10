@@ -11,17 +11,17 @@ const text = `
 const items: CollapseProps['items'] = [
   {
     key: '1',
-    label: 'This is panel header 1',
+    label: 'Section 1: Introduction to NodeJs',
     children: <p>{text}</p>,
   },
   {
     key: '2',
-    label: 'This is panel header 2',
+    label: 'section 2 : advanced nodeJs',
     children: <p>{text}</p>,
   },
   {
     key: '3',
-    label: 'This is panel header 3',
+    label: 'section 3 : final project',
     children: <p>{text}</p>,
   },
 ];
@@ -31,7 +31,7 @@ const Collapses: React.FC = () => {
     console.log(key);
   };
 
-  return <Collapse items={items} defaultActiveKey={['1']} onChange={onChange} />;
+  return <Collapse className='w-full' items={items} defaultActiveKey={['1']} onChange={onChange} />;
 };
 
 export default Collapses;
