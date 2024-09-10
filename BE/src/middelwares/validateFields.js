@@ -1,16 +1,5 @@
 import { AppError } from "../utilies/error.js";
-
-
-
-
-
-
-
-
-
-
-export const validateFields = (schema) => (req, res, next) => {
-    
+export const validateFields = (schema) => (req, res, next) => {    
     const { error } = schema.validate(req.body, { abortEarly: false });
     console.log(req.body);
     if (error) {

@@ -14,15 +14,18 @@ export const authorize = (...roles) => {
 export const authenticate = catchAsyncError(async (req, res, next) => {
     const token = req.cookies.authToken    
 
-    if (!token) next(new AppError("Unathorized", 401))
+    
+
+    if (!token) next(new AppError("UnAuthenticated", 401))
 
     let userPayload = null;
-
-    jwt.verify(token, process.env.SECRET_KEY, async (error, payload) => {
-
-        if (error) return next(new AppError(error.message, 498))
-        userPayload = payload
-    })
+    try {
+        // Use the synchronous version of jwt.verify to avoid issues with async behavior
+        userPayload = jwt.verify(token, process.env.SECRET_KEY);
+    } catch (error) {
+        // If there's an error in token verification, handle it
+        return next(new AppError(error.message, 498));
+    }
 
 
     const user = await userModel.findById(userPayload._id)

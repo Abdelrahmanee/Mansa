@@ -7,16 +7,25 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
+
 
 const { Header, Sider, Content } = Layout;
 
 const Lectures: React.FC = () => {
+
+
+  const { lectureId } = useParams()
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(true);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+
+
+
+
 
   return (
     <Layout className='min-h-screen'>
@@ -33,7 +42,7 @@ const Lectures: React.FC = () => {
               icon: <UserOutlined />,
               label: 'Lecture Details',
               onClick: () => {
-               navigate('/lecture/')
+                navigate(`/lecture/${lectureId}`)
               }
             },
             {
@@ -41,16 +50,16 @@ const Lectures: React.FC = () => {
               icon: <VideoCameraOutlined />,
               label: 'Videos',
               onClick: () => {
-                navigate('/lecture/vedios')
-               }
+                navigate(`/lecture/${lectureId}/videos`)
+              }
             },
             {
               key: '3',
               icon: <FilePdfOutlined />,
               label: 'Pdfs',
               onClick: () => {
-                navigate('/lecture/pdfs')
-               }
+                navigate(`/lecture/${lectureId}/pdfs`)
+              }
             },
           ]}
         />

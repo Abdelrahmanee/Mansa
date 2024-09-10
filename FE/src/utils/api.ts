@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AllLectureResponse } from "./models";
 
 const baseUrl: string = "http://localhost:3000/api/v1";
 
@@ -25,17 +26,60 @@ export const login = async (data: {
   identifier: string;
   password: string;
 }): Promise<unknown> => {
-  const res = await axios.post(`${baseUrl}/auth/login`, data);
+  const res = await axios.post(`${baseUrl}/auth/login`, data, {
+    withCredentials: true, // Include credentials to handle cookies
+  });
   return res.data;
 };
 
 
-const checkStudentAccess = async (lectureId: string, accessCode: string) => {
-  const response = await axios.post(`${baseUrl}/lectures/lecture_access_request`, {
-    accessCode
+
+export const getLectures = async (): Promise<{
+  data: AllLectureResponse[];
+  message: string;
+}> => {
+  const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
+    withCredentials: true,
   });
-  return response.data;  // Assuming the API responds with some data about access
+  return response.data;
 };
 
-export { checkStudentAccess };
+export const CheckStudentAccess = async (
+  lectureId: string
+): Promise<{
+  status: string;
+  message: string;
+  hasAccess: boolean;
+}> => {
+  const response = await axios.post(
+    `${baseUrl}/lectures/check_student_access`,
+    {
+      lectureId,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
 
+
+export const giveUserAccess = async (
+  lectureId: string,
+  code: string
+): Promise<{
+  status: string;
+  message: string;
+}> => {
+  const response = await axios.post(
+    `${baseUrl}/lectures/lecture_access_request`,
+    {
+      lectureId,
+      code
+    },
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};

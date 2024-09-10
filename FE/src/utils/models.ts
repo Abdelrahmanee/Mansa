@@ -33,3 +33,26 @@ export interface IFormInput {
   sex: string;
   files: File[];
 }
+
+
+export interface AllLectureResponse {
+  _id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  duration: number;
+  logo: string;
+  pdfs: string[];
+  price: number;
+  rating: number;
+  teacherId: string
+  videos: string[];
+}
+
+// Define the API response type
+export interface AccessResponse {
+  status: string;
+  message: string;
+}

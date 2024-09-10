@@ -12,10 +12,11 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Error10 from './components/NotFound/NotFound'
 import { Signup } from './components/Signup/Signup'
 import 'react-toastify/dist/ReactToastify.css';
-import Lectures from './components/Lectures/Lectures'
 import { LectureVideo } from './components/Lectures/LectureVideo'
 import { LecturePDFs } from './components/Lectures/LecturePDFs'
 import LectureDetials from './components/Lectures/LectureDetials'
+import { LectureRoute } from './components/Lectures/LectureRoute'
+import { AccessCode } from './components/AccessCode/AccessCode'
 
 const queryClient = new QueryClient()
 
@@ -29,12 +30,15 @@ function App() {
         { path: 'signup', element: <Signup /> },
         { path: 'login', element: <Login /> },
         {
-          path: 'lecture', element: <Lectures />, children: [
-            { index: true, element: <LectureDetials /> },
-            { path: "vedios", element: <LectureVideo /> },
-            { path: "pdfs", element: <LecturePDFs /> },
+          path: 'lecture/:lectureId',
+          element: <LectureRoute />,  
+          children: [
+            { index: true, element: <LectureDetials /> },   
+            { path: "videos", element: <LectureVideo /> },  
+            { path: "pdfs", element: <LecturePDFs /> },        
           ]
         },
+        { path: "lecture/:lectureId/access-code", element: <AccessCode /> },
         { path: "*", element: <Error10 /> }
       ]
     }
