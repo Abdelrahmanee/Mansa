@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../Hooks/StoreHooks';
 import { clearUser } from '../../Store/AuthSlice';
-
+import { UserOutlined, PoweroffOutlined, SettingOutlined } from '@ant-design/icons'
 
 function Navbar() {
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const user = useAppSelector((state) => state.auth.user)
   const dispath = useAppDispatch()
   const nav = useNavigate()
 
@@ -37,15 +38,10 @@ function Navbar() {
           <ul
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-            <li><a>Item 1</a></li>
-            <li>
-              <a>Parent</a>
-              <ul className="p-2">
-                <li><a>Submenu 1</a></li>
-                <li><a>Submenu 2</a></li>
-              </ul>
-            </li>
-            <li><a>Item 3</a></li>
+            <li><Link to='/'>Home</Link></li>
+            <li><Link to='/allLectures'>Lectures</Link></li>
+            <li><Link to='/contact'>Contact</Link></li>
+            <li><Link to='/'>About us</Link></li>
           </ul>
         </div>
         <Link to='/' className="btn btn-ghost text-xl">
@@ -54,16 +50,54 @@ function Navbar() {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-          <li><a>Item 1</a></li>
-          <li><a>Item 2</a></li>
-          <li><a>Item 3</a></li>
+          <li><Link to='/'>Home</Link></li>
+          <li><Link to='/allLectures'>Lectures</Link></li>
+          <li><Link to='/contact'>Contact</Link></li>
+          <li><Link to='/'>About us</Link></li>
         </ul>
       </div>
       <div className="navbar-end gap-2">
+
+
         {isAuthenticated ?
-          <Button
-            onClick={handleLogout}
-            danger>Logout </Button>
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+              <div className="w-10 rounded-full">
+                {user?.profilePicture ? <img
+                  alt="Tailwind CSS Navbar component"
+                  src={user.profilePicture} /> : <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg" />}
+
+
+              </div>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              <li>
+                <Link to='/profile' className="justify-between">
+                  <span className='flex gap-1'>
+                    <UserOutlined />
+                    <span>Profile</span>
+                  </span>
+                  <span className="badge">New</span>
+                </Link>
+              </li>
+              <li><Link to='/adminPanel' className="justify-between">
+                <span className='flex gap-1'>
+                  <SettingOutlined />
+                  <span>Admin</span>
+                </span>
+              </Link></li>
+              <li><button onClick={handleLogout} className="justify-between font-poppins text-alternative-500 font-medium ">
+                <span className='flex gap-1 items-center justify-center'>
+                  <PoweroffOutlined className='text-red-500' />
+                  <span>Log out</span>
+                </span>
+              </button></li>
+            </ul>
+          </div>
           : <>
             <Link to='/login' >
               <Button >Login </Button>
@@ -73,7 +107,7 @@ function Navbar() {
             </Link></>}
 
       </div>
-    </div>
+    </div >
   )
 }
 

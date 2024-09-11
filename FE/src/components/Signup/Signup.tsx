@@ -1,5 +1,5 @@
 import logo from '../../Assets/Group.png';
-import { ErrorResponse, IFormInput } from "../../utils/models";
+import { ErrorResponse, IFormInput } from "../../utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "./signup.validations";
 import { useMutation } from "@tanstack/react-query";

@@ -2,7 +2,7 @@ import { Control, Controller, FieldErrors } from "react-hook-form";
 import { Select } from "antd";
 import React from "react";
 import FormInputField from "./ReusableInputField";
-import { IFormInput } from "../../utils/models";
+import { IFormInput } from "../../utils/types";
 
 
 

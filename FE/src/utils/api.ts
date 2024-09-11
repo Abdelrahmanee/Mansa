@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AllLectureResponse } from "./models";
+import { AllLectureResponse, updateUserResponse } from "./types";
 
 const baseUrl: string = "http://localhost:3000/api/v1";
 
@@ -32,16 +32,22 @@ export const login = async (data: {
   return res.data;
 };
 
-
-
 export const getLectures = async (): Promise<{
   data: AllLectureResponse[];
   message: string;
 }> => {
-  const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
-    withCredentials: true,
-  });
-  return response.data;
+  try {
+    const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return {
+      data: [],
+      message: "Failed to fetch lectures",
+    };
+  }
 };
 
 export const CheckStudentAccess = async (
@@ -63,7 +69,6 @@ export const CheckStudentAccess = async (
   return response.data;
 };
 
-
 export const giveUserAccess = async (
   lectureId: string,
   code: string
@@ -75,11 +80,28 @@ export const giveUserAccess = async (
     `${baseUrl}/lectures/lecture_access_request`,
     {
       lectureId,
-      code
+      code,
     },
     {
       withCredentials: true,
     }
   );
   return response.data;
+};
+
+export const updateUser = async (
+  data: Partial<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    GOV: string;
+    city: string;
+    mobileNumber: string;
+    DOB: string;
+  }>
+): Promise<updateUserResponse> => {
+  const res = await axios.put(`${baseUrl}/users/update_account`, data, {
+    withCredentials: true, // Include credentials to handle cookies
+  });
+  return res.data;
 };

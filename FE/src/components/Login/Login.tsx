@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../utils/api";
 import { useAppDispatch } from "../../Hooks/StoreHooks";
 import { setUser } from "../../Store/AuthSlice";
-import { ErrorResponse, LoginResponse } from "../../utils/models";
+import { ErrorResponse, LoginResponse } from "../../utils/types";
 import { useState } from "react";
 
 

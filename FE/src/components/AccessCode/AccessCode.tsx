@@ -5,20 +5,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, message } from "antd";
 import { giveUserAccess } from "../../utils/api";
 import { useMutation } from "@tanstack/react-query";
-import { AccessResponse } from "../../utils/models";
+import { AccessResponse } from "../../utils/types";
 import { AxiosError } from "axios";
+import { useState } from "react";
 
 export const AccessCode = () => {
 
   const { lectureId } = useParams<{ lectureId: string }>();
+  const [isLoading, setIsLoading] = useState(false);
   const naviagte = useNavigate()
 
-  // useMutation for making the POST request
   const { mutateAsync, data: resData } = useMutation<AccessResponse, Error, { lectureId: string; code: string }>({
-    mutationFn: ({ lectureId, code }) => giveUserAccess(lectureId, code), // Make POST request
+    mutationFn: ({ lectureId, code }) => giveUserAccess(lectureId, code), 
     onSuccess: (data) => {
-      // Handle success, e.g., display a success message
       message.success(data.message);
+      setIsLoading(false);
       naviagte(`/lecture/${lectureId}`); // Navigate to the lecture page
     },
     onError: (error: Error) => {
@@ -32,6 +33,7 @@ export const AccessCode = () => {
         // Otherwise, handle as a regular error
         message.error(error.message || 'An error occurred');
       }
+      setIsLoading(false);
 
     },  });
 
@@ -49,17 +51,15 @@ export const AccessCode = () => {
   })
 
   const onSubmit = async (data: z.infer<typeof validationSchema>) => {
+    setIsLoading(true);
     const { code } = data;
 
-    // Call the mutation function with lectureId and code
     if (lectureId) {
       await mutateAsync({ lectureId, code });
       console.log(resData);
 
     }
   };
-
-
 
   return (
     <div className='w-full h-screen flex justify-center items-center'>
@@ -84,7 +84,7 @@ export const AccessCode = () => {
               {errors.code && errors.code.message}
             </span>
           </div>
-          <Button type="primary" htmlType="submit" className="mt-6 " block>Submit</Button>
+          <Button type="primary" htmlType="submit" loading={isLoading} className="mt-6 " block>Submit</Button>
         </form>
       </div>
     </div>
