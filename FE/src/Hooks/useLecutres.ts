@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLectures } from "../utils/api";
-import { AllLectureResponse } from "../utils/models";
+import { AllLectureResponse } from "../utils/types";
 
 // hooks/useLectures.ts
 const useLectures = () => {

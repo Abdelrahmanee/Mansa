@@ -19,6 +19,7 @@ import { LectureRoute } from './components/Lectures/LectureRoute'
 import { AccessCode } from './components/AccessCode/AccessCode'
 import AllLectures from './components/AllLectures/AllLectures'
 import { Contactus } from './components/ContactUs/Contactus'
+import { Profile } from './components/Profile/Profile'
 
 const queryClient = new QueryClient()
 
@@ -33,6 +34,7 @@ function App() {
         { path: 'login', element: <Login /> },
         { path: 'AllLectures', element: <PrivateRoute><AllLectures /></PrivateRoute> },
         { path: 'contact', element:<PrivateRoute> <Contactus /></PrivateRoute> },
+        { path: 'profile', element:<PrivateRoute> <Profile /></PrivateRoute> },
         {
           path: 'lecture/:lectureId',
           element: <LectureRoute />,  

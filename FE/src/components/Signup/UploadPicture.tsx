@@ -3,7 +3,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import React from 'react'
 import { UploadProps } from "antd";
 import { Control, Controller, FieldErrors } from 'react-hook-form';
-import { IFormInput } from "../../utils/models";
+import { IFormInput } from "../../utils/types";
 
 
 

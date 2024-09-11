@@ -18,7 +18,16 @@ export const updateAccount = catchAsyncError(async (req, res, next) => {
         return next(new AppError('User not found', 404));
     }
 
-    const allowedUpdates = ['lastName', 'firstName', 'recoveryEmail', 'DOB', 'city', 'GOV'];
+    const { mobileNumber } = req.body
+
+    if (mobileNumber) {
+        const isMobileExist = await userModel.findOne({ mobileNumber });
+        if (isMobileExist) {
+            throw new AppError('Mobile number exists. Please try another mobile number.', 409);
+        }
+    }
+
+    const allowedUpdates = ['lastName', 'firstName', 'recoveryEmail', 'DOB', 'city', 'GOV', 'mobileNumber'];
     const updates = {};
 
     // Extract keys from the request body
@@ -59,10 +68,27 @@ export const updateAccount = catchAsyncError(async (req, res, next) => {
         return next(new AppError('User not found or update failed', 404));
     }
 
+    const formatUserResponse = (user) => {
+        return {
+            email: user.email.toLowerCase(),
+            userName: user.userName.toLowerCase(),
+            role: user.role.toLowerCase(),
+            status: user.status.toLowerCase(),
+            sex: user.sex.toLowerCase(),
+            age: user.age,
+            profilePicture: user.profilePicture,
+            mobileNumber: user.mobileNumber,
+            city: user.city,
+            GOV: user.GOV,
+            DOB: user.DOB,
+            _id: user._id
+        };
+    }
+
     res.status(200).json({
         status: "success",
         message: 'User updated successfully',
-        data: user
+        data: formatUserResponse(user)
     });
 });
 
@@ -97,7 +123,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
                 const cloudinaryResult = await cloudinary.uploader.destroy(oldPublicId);
 
                 if (cloudinaryResult.result !== 'ok') {
-                    throw new AppError('Cloudinary deletion failed' , 500);
+                    throw new AppError('Cloudinary deletion failed', 500);
                 }
             } catch (error) {
                 // If the Cloudinary deletion fails, abort the MongoDB transaction
@@ -119,7 +145,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
                 (error, result) => {
                     if (error) {
                         reject(new AppError('Error uploading image to Cloudinary', 500));
-                       
+
                     } else {
                         resolve(result);
                     }
@@ -190,7 +216,7 @@ export const deleteAccount = catchAsyncError(async (req, res, next) => {
         // Handle Cloudinary deletion for the user's profile picture
         if (user.profilePicture && user.profilePicture !== defaultProfilePictureUrl) {
             const publicId = extractPublicId(user.profilePicture);
-            console.log("publicId");             
+            console.log("publicId");
 
             if (publicId) {
                 try {

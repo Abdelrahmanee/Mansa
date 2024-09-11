@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, message } from "antd";
 import { giveUserAccess } from "../../utils/api";
 import { useMutation } from "@tanstack/react-query";
-import { AccessResponse } from "../../utils/models";
+import { AccessResponse } from "../../utils/types";
 import { AxiosError } from "axios";
 import { useState } from "react";
 

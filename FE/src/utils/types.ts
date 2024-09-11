@@ -56,3 +56,9 @@ export interface AccessResponse {
   status: string;
   message: string;
 }
+
+export interface updateUserResponse {
+  status: string;
+  message: string;
+  data: User;
+}

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Badge, Button, Card, Col, Row } from 'antd';
+import { Badge, Button, Card, Col, Row, Spin } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { useNavigate } from 'react-router-dom';
+import { LoadingOutlined } from '@ant-design/icons';
 import useLectures from '../../Hooks/useLecutres';
 
 const Cards: React.FC = () => {
@@ -9,12 +10,13 @@ const Cards: React.FC = () => {
 
 
   const navigate = useNavigate()
-  const { data, isLoading ,isError} = useLectures()
+  const { data, isLoading, isError, error } = useLectures()
 
   if (isError) {
+    console.log(error);
     return <div>Error...</div>;
   }
-  
+
 
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
@@ -25,7 +27,7 @@ const Cards: React.FC = () => {
   };
 
   return <>
-    {isLoading ? <div>loading</div> : <div className='max-w-[80%] mx-auto mt-10 '>
+    {isLoading ? <div className='w-[80%] mx-auto mt-10 min-h-[250px] flex justify-center items-center'><Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} size="large" /></div> : <div className='max-w-[80%] mx-auto mt-10 '>
       <div className='w-full flex justify-center items-center mb-5'>
         <div className='relative w-fit mx-auto md:mx-0'>
           <h1

@@ -93,8 +93,9 @@ class AuthService {
         // Set the cookie with the auth token
         res.cookie('authToken', token, {
             httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-            sameSite: 'strict', // Prevents CSRF
-            maxAge: 24 * 60 * 60 * 1000 // Cookie expiration in milliseconds (e.g., 1 day)
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Use 'none' for cross-origin in production
+            secure: process.env.NODE_ENV === 'production', // Only secure in production
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
     }
 
