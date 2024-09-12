@@ -104,7 +104,7 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
 
 export const getLectureById = catchAsyncError(async (req, res, next) => {
 
-  const { lectureId } = req.body;
+  const { lectureId } = req.params;
 
   try {
 

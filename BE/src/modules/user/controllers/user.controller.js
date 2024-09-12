@@ -351,7 +351,25 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     req.user.otp = null;
     await req.user.save();
 
-    res.status(200).json({ status: "success", message: 'Password reset successfully', user: req.user });
+
+    const formatUserResponse = (user) => {
+        return {
+            email: user.email.toLowerCase(),
+            userName: user.userName.toLowerCase(),
+            role: user.role.toLowerCase(),
+            status: user.status.toLowerCase(),
+            sex: user.sex.toLowerCase(),
+            age: user.age,
+            profilePicture: user.profilePicture,
+            mobileNumber: user.mobileNumber,
+            city: user.city,
+            GOV: user.GOV,
+            DOB: user.DOB,
+            _id: user._id
+        };
+    }
+
+    res.status(200).json({ status: "success", message: 'Password reset successfully', user: formatUserResponse(req.user) });
 })
 
 // Get all accounts associated to a specific recovery Email 

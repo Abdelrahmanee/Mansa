@@ -12,7 +12,7 @@ export const ProtectedLectureRoute = ({ children, lectureId }: { children: React
     navigate(path);
   };
 
-  const { data, error, isLoading } = useQuery<{
+  const { data, error, isLoading , isError} = useQuery<{
     status: string;
     message: string;
     hasAccess: boolean;
@@ -28,8 +28,7 @@ export const ProtectedLectureRoute = ({ children, lectureId }: { children: React
 
 
 
-  if (error || (data && !data.hasAccess)) {
-    console.log(error);
+  if (isError || error || (data && !data.hasAccess)) {
     return <div className='w-full h-screen flex justify-center items-center'>
       <Result
         status="403"

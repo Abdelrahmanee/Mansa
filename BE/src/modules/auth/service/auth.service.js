@@ -61,8 +61,6 @@ class AuthService {
         }
     }
 
-    // belongs to login
-
     async generateToken(user) {
         const { email, userName, role, sex, status, age, mobileNumber, _id } = user;
 

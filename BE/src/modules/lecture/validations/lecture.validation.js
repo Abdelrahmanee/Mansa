@@ -24,9 +24,9 @@ export const addLectureSchema = Joi.object({
                 'string.max': `Description should have a maximum length of {#limit}`,
                 'any.required': `Description is a required field`
             }),
-            price: Joi.number().required(),
-            duration : Joi.number().required(),
-            rating: Joi.number().max(5).required(),
+        price: Joi.number().required(),
+        duration: Joi.number().required(),
+        rating: Joi.number().max(5).required(),
     },
     params: {},
     query: {},
@@ -102,7 +102,8 @@ export const checkingAccess = Joi.object({
 
 
 export const getLectureByIdSchema = Joi.object({
-    body: {
+    body: {},
+    params: {
         lectureId: Joi.string()
             .regex(/^[0-9a-fA-F]{24}$/)
             .required()
@@ -110,6 +111,5 @@ export const getLectureByIdSchema = Joi.object({
                 'string.pattern.base': `Lecture ID must be a valid ObjectId`,
             })
     },
-    params: {},
     query: {}
 })
