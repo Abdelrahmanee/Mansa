@@ -1,46 +1,42 @@
 import nodemailer from 'nodemailer';
 import otpGenerator from 'otp-generator';
+import dotenv from 'dotenv'
+dotenv.config()
 
-export const sendEmailVerfication = async (email, options = {}) => {
-	
-	const { otp, link } = options;
+const transporter = nodemailer.createTransport({
+	service: 'gmail', // or your email service provider
+	auth: {
+		user: process.env.EMAIL, // Your email
+		pass: process.env.EMAIL_PASSWORD, // Your email password
+	},
+});
 
-	let message = '';
-	if (otp) {
-		message += `To reset your password.Submit this reset password code : <h1>${otp}</h1>  If you did not request a change of password, please ignore this email!`;
-	}
-	if (link) {
-		message += (otp ? '<br/><br/>' : '') + `<a href="${link}">Click here to verify your email</a>`;
-	}
-
-	const transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.EMAIL, // Your email address
-			pass: process.env.EMAIL_PASSWORD // Your email password
-		}
-	});
-
-	const mailOptions = {
-		from: process.env.EMAIL,
-		to: email,
-		subject: 'Your Verification Details',
-		html: message
-	};
-
+/**
+ * Send an email with a dynamic HTML template.
+ * @param {string} to - The recipient email address.
+ * @param {string} subject - The subject of the email.
+ * @param {Function} htmlTemplateFunc - The template function that generates HTML content.
+ * @param {Object} templateData - The data to be passed to the template function.
+ */
+export const sendEmail = async (to, subject, htmlTemplateFunc, templateData) => {
 	try {
+		// Generate HTML from the template function
+		const htmlContent = htmlTemplateFunc(templateData);
+
+		// Send the email
+		const mailOptions = {
+			from: process.env.EMAIL, // sender address
+			to: to, // recipient address
+			subject: subject, // Subject line
+			html: htmlContent, // HTML body content
+		};
+
 		await transporter.sendMail(mailOptions);
+		console.log('Email sent successfully!');
 	} catch (error) {
 		console.error('Error sending email:', error);
-
-		// Detailed error handling
-		if (error.response && error.response.body && error.response.body.errors) {
-			console.error('Email error details:', error.response.body.errors);
-		}
-		throw new Error('Failed to send email');
 	}
 };
-
 export const generateOTP = () => {
 	return otpGenerator.generate(6, {
 		digits: true,

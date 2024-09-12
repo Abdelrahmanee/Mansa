@@ -1,5 +1,5 @@
 import { authenticate, authorize, checkAccountVerification, checkUniqueIdentifier, isEmailExist, isUserExist } from "../../auth/middelwares/auth.middelware.js";
-import { anotherUserInfo, deleteAccount, sendOTP, getAllAccountsAssociated, resetPassword, updateAccount, updateAccountEmail, updatePassword, userInfo, kickUserOut, softDeleteUser, updateProfilePicture, userLoggedOut, blockUser, userBlockedList, removeFromBlockList } from "../controllers/user.controller.js";
+import { anotherUserInfo, deleteAccount, sendOTP, getAllAccountsAssociated, resetPassword, updateAccount, updateAccountEmail, updatePassword, userInfo, kickUserOut, softDeleteUser, updateProfilePicture, userLoggedOut, blockUser, userBlockedList, removeFromBlockList, getMyLectures } from "../controllers/user.controller.js";
 
 import { Router } from "express";
 import { anotherUserInfoSchema, sendOTPSchema, recoveryEmailSchema, resetPasswordSchema, updateAccountEmailSchema, updateAccountSchema, updatePasswordSchema, kickUserOutSchema, updateProfilePictureSchema } from "../validation/user.validation.js";
@@ -38,6 +38,7 @@ router.patch('/update_password',
     validate(updatePasswordSchema), authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), updatePassword)
 
 router.get('/user_info', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), userInfo)
+router.get('/my_lectures', authenticate, authorize(ROLES.STUDENT), getMyLectures)
 
 
 

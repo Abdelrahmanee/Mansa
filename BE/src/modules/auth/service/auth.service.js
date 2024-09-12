@@ -4,7 +4,8 @@ import { v4 as uuid4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../../../utilies/error.js';
 import { userModel } from '../../user/models/user.model.js';
-import { sendEmailVerfication } from '../../../utilies/email.js';
+import { sendEmail } from '../../../utilies/email.js';
+import { VERIFICATION_EMAIL_TEMPLATE } from '../../../utilies/htmlTemplate.js';
 class AuthService {
     
     // Belongs to registerion
@@ -46,7 +47,7 @@ class AuthService {
     async generateEmailVerificationToken(email) {
         const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY, { expiresIn: '1h' });
         const link = `${process.env.BASE_URL}api/v1/auth/confirmEmail/${emailToken}`;
-        await sendEmailVerfication(email, { link });
+        await sendEmail(email, 'Email Verfication' , VERIFICATION_EMAIL_TEMPLATE , link)
     }
 
     async createUser(data) {

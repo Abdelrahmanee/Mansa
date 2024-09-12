@@ -6,7 +6,9 @@ import { userModel } from "../models/user.model.js";
 import mongoose, { startSession } from 'mongoose';
 import dotenv from 'dotenv'
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
-import { generateOTP, sendEmailVerfication } from '../../../utilies/email.js';
+import { generateOTP, sendEmail } from '../../../utilies/email.js';
+import { StudentLectureModel } from '../../lecture/models/StudentLecture.model.js';
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from '../../../utilies/htmlTemplate.js';
 dotenv.config()
 const defaultProfilePictureUrl = process.env.DEFAULT_PROFILE_PICTURE_URL
 
@@ -97,7 +99,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
                 const cloudinaryResult = await cloudinary.uploader.destroy(oldPublicId);
 
                 if (cloudinaryResult.result !== 'ok') {
-                    throw new AppError('Cloudinary deletion failed' , 500);
+                    throw new AppError('Cloudinary deletion failed', 500);
                 }
             } catch (error) {
                 // If the Cloudinary deletion fails, abort the MongoDB transaction
@@ -119,7 +121,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
                 (error, result) => {
                     if (error) {
                         reject(new AppError('Error uploading image to Cloudinary', 500));
-                       
+
                     } else {
                         resolve(result);
                     }
@@ -159,7 +161,7 @@ export const updateAccountEmail = catchAsyncError(async (req, res, next) => {
 
     const email_token = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY)
     const link = process.env.BASE_URL + `api/v1/auth/confirmEmail/${email_token}`
-    await sendEmailVerfication(email, { link })
+    await sendEmail(email, 'Email Verfication', VERIFICATION_EMAIL_TEMPLATE, link)
     req.user.email = email
     req.user.status = "offline"
     req.user.isEmailVerified = false
@@ -190,7 +192,7 @@ export const deleteAccount = catchAsyncError(async (req, res, next) => {
         // Handle Cloudinary deletion for the user's profile picture
         if (user.profilePicture && user.profilePicture !== defaultProfilePictureUrl) {
             const publicId = extractPublicId(user.profilePicture);
-            console.log("publicId");             
+            console.log("publicId");
 
             if (publicId) {
                 try {
@@ -235,6 +237,13 @@ export const userInfo = catchAsyncError(async (req, res, next) => {
     if (!_id) { return next(new AppError('User not found', 404)) };
     const user = await userModel.findById(_id)
     res.status(200).json({ user })
+})
+export const getMyLectures = catchAsyncError(async (req, res, next) => {
+    const { _id: studentId } = req.user
+    const user = await userModel.findById(studentId)
+    if (!user) { return next(new AppError('User not found', 404)) };
+    const lectures = await StudentLectureModel.find({ studentId })
+    res.status(200).json({ lectures })
 })
 
 // Get profile data for another user 
@@ -304,7 +313,7 @@ export const sendOTP = catchAsyncError(async (req, res, next) => {
     user.otp = otp;
     user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
-    await sendEmailVerfication(user.email, { otp })
+    await sendEmail(user.email, "Otp Verfication ", PASSWORD_RESET_REQUEST_TEMPLATE, otp)
 
 
     res.status(200).json({ status: "success", message: 'OTP is sent' })
@@ -324,6 +333,7 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     req.user.resetPasswordExpires = null
     req.user.otp = null;
     await req.user.save();
+    await sendEmail(user.email, "Otp verfication ", PASSWORD_RESET_SUCCESS_TEMPLATE, req.user.userName)
 
     res.status(200).json({ status: "success", message: 'Password reset successfully', user: req.user });
 })
