@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../utils/api";
 import { useAppDispatch } from "../../Hooks/StoreHooks";
 import { setUser } from "../../Store/AuthSlice";
-import { ErrorResponse, LoginResponse } from "../../utils/models";
+import { ErrorResponse, LoginResponse } from "../../utils/types";
 import { useState } from "react";
 
 
@@ -124,9 +124,9 @@ export const Login = () => {
                 </div>
 
                 <div className="text-sm">
-                  <a href="#" className="text-blue-600 hover:underline font-semibold">
+                  <Link to='/forgetPassword' className="text-blue-600 hover:underline font-semibold">
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
               </div>
 

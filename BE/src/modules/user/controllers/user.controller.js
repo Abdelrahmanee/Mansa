@@ -20,7 +20,16 @@ export const updateAccount = catchAsyncError(async (req, res, next) => {
         return next(new AppError('User not found', 404));
     }
 
-    const allowedUpdates = ['lastName', 'firstName', 'recoveryEmail', 'DOB', 'city', 'GOV'];
+    const { mobileNumber } = req.body
+
+    if (mobileNumber) {
+        const isMobileExist = await userModel.findOne({ mobileNumber });
+        if (isMobileExist) {
+            throw new AppError('Mobile number exists. Please try another mobile number.', 409);
+        }
+    }
+
+    const allowedUpdates = ['lastName', 'firstName', 'recoveryEmail', 'DOB', 'city', 'GOV', 'mobileNumber'];
     const updates = {};
 
     // Extract keys from the request body
@@ -61,10 +70,27 @@ export const updateAccount = catchAsyncError(async (req, res, next) => {
         return next(new AppError('User not found or update failed', 404));
     }
 
+    const formatUserResponse = (user) => {
+        return {
+            email: user.email.toLowerCase(),
+            userName: user.userName.toLowerCase(),
+            role: user.role.toLowerCase(),
+            status: user.status.toLowerCase(),
+            sex: user.sex.toLowerCase(),
+            age: user.age,
+            profilePicture: user.profilePicture,
+            mobileNumber: user.mobileNumber,
+            city: user.city,
+            GOV: user.GOV,
+            DOB: user.DOB,
+            _id: user._id
+        };
+    }
+
     res.status(200).json({
         status: "success",
         message: 'User updated successfully',
-        data: user
+        data: formatUserResponse(user)
     });
 });
 
@@ -335,7 +361,25 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     await req.user.save();
     await sendEmail(user.email, "Otp verfication ", PASSWORD_RESET_SUCCESS_TEMPLATE, req.user.userName)
 
-    res.status(200).json({ status: "success", message: 'Password reset successfully', user: req.user });
+
+    const formatUserResponse = (user) => {
+        return {
+            email: user.email.toLowerCase(),
+            userName: user.userName.toLowerCase(),
+            role: user.role.toLowerCase(),
+            status: user.status.toLowerCase(),
+            sex: user.sex.toLowerCase(),
+            age: user.age,
+            profilePicture: user.profilePicture,
+            mobileNumber: user.mobileNumber,
+            city: user.city,
+            GOV: user.GOV,
+            DOB: user.DOB,
+            _id: user._id
+        };
+    }
+
+    res.status(200).json({ status: "success", message: 'Password reset successfully', user: formatUserResponse(req.user) });
 })
 
 // Get all accounts associated to a specific recovery Email 

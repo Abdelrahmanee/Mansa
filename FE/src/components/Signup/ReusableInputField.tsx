@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "antd";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { IFormInput } from "../../utils/models";
+import { IFormInput } from "../../utils/types";
 
 
 interface FormInputFieldProps {

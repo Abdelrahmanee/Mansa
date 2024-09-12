@@ -12,6 +12,7 @@ export const updateAccountSchema = Joi.object({
         GOV: Joi.string().min(2).max(100),
         city: Joi.string().min(2).max(100),
         DOB: Joi.date(),
+        mobileNumber: Joi.string().min(2).max(100),
     },
     params: {},
     query: {},

@@ -12,7 +12,7 @@ const router = Router()
 
 
 
-router.get('/getLectureByID', authenticate, validate(getLectureByIdSchema), getLectureById)
+router.get('/getLectureByID/:lectureId', authenticate, validate(getLectureByIdSchema), getLectureById)
 
 router.get('/getAllLectures', authenticate, authorize('teacher', 'student'), getAllLectures)
 

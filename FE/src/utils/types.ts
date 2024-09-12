@@ -34,7 +34,6 @@ export interface IFormInput {
   files: File[];
 }
 
-
 export interface AllLectureResponse {
   _id: string;
   title: string;
@@ -47,7 +46,7 @@ export interface AllLectureResponse {
   pdfs: string[];
   price: number;
   rating: number;
-  teacherId: string
+  teacherId: string;
   videos: string[];
 }
 
@@ -55,4 +54,31 @@ export interface AllLectureResponse {
 export interface AccessResponse {
   status: string;
   message: string;
+}
+
+export interface updateUserResponse {
+  status: string;
+  message: string;
+  data: User;
+}
+
+export interface Lecture {
+  _id: string;
+  title: string;
+  description: string;
+  teacherId: string;
+  price: number;
+  duration: number;
+  rating: number;
+  pdfs: string[];
+  videos: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  logo: string;
+}
+
+export interface LectureByID {
+  status: string;
+  data: Lecture;
 }

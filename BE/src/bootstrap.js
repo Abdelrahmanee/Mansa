@@ -16,10 +16,18 @@ export const bootstrap = (app) => {
 
     app.use(cookieParser())
     app.use(express.json())
-    app.use(cors({
-        origin: 'http://localhost:5173', // Frontend's address
-        credentials: true, // Allow credentials (cookies) to be included in requests
-      }));
+    // Allow all origins
+    const corsOptions = {
+        origin: (origin, callback) => {
+            callback(null, true); // Allow any origin dynamically
+        },
+        credentials: true, // Allow credentials (cookies)
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
+    };
+
+
+    app.use(cors(corsOptions));
       
       
     app.use(morgan('dev'))

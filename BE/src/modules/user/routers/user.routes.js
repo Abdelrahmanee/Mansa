@@ -16,7 +16,7 @@ const router = Router()
 router.put('/update_account',
     validate(updateAccountSchema),
     authenticate,
-    authorize(ROLES.STUDENT, ROLES.ADMIN),
+    authorize('student', 'teacher'),
     updateAccount
 )
 router.patch('/update_profilePicture',

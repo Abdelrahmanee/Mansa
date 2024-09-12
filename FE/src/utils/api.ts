@@ -1,5 +1,10 @@
 import axios from "axios";
-import { AllLectureResponse } from "./models";
+import {
+  AllLectureResponse,
+  LectureByID,
+  updateUserResponse,
+  User,
+} from "./types";
 
 const baseUrl: string = "http://localhost:3000/api/v1";
 
@@ -32,16 +37,22 @@ export const login = async (data: {
   return res.data;
 };
 
-
-
 export const getLectures = async (): Promise<{
   data: AllLectureResponse[];
   message: string;
 }> => {
-  const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
-    withCredentials: true,
-  });
-  return response.data;
+  try {
+    const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return {
+      data: [],
+      message: "Failed to fetch lectures",
+    };
+  }
 };
 
 export const CheckStudentAccess = async (
@@ -63,7 +74,6 @@ export const CheckStudentAccess = async (
   return response.data;
 };
 
-
 export const giveUserAccess = async (
   lectureId: string,
   code: string
@@ -75,11 +85,61 @@ export const giveUserAccess = async (
     `${baseUrl}/lectures/lecture_access_request`,
     {
       lectureId,
-      code
+      code,
     },
     {
       withCredentials: true,
     }
   );
   return response.data;
+};
+
+export const updateUser = async (
+  data: Partial<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    GOV: string;
+    city: string;
+    mobileNumber: string;
+    DOB: string;
+  }>
+): Promise<updateUserResponse> => {
+  const res = await axios.put(`${baseUrl}/users/update_account`, data, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
+// ForgetPassword and Send OTP
+export const forgetPassword = async (data: {
+  identifier: string;
+}): Promise<{
+  status: string;
+  message: string;
+}> => {
+  const res = await axios.put(`${baseUrl}/users/send_otp`, data);
+  return res.data;
+};
+
+export const setNewPassword = async (data: {
+  identifier: string;
+  new_password: string;
+  otp: string;
+}): Promise<{
+  status: string;
+  message: string;
+  user: User;
+}> => {
+  const res = await axios.put(`${baseUrl}/users/reset_password`, data);
+  return res.data;
+};
+
+export const getLectureByID = async (
+  lectureId: string
+): Promise<LectureByID> => {
+  const res = await axios.get(`${baseUrl}/lectures/getLectureByID/${lectureId}`, {
+    withCredentials: true,
+  });
+  return res.data;
 };
