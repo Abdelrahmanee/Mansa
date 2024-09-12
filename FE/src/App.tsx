@@ -20,6 +20,8 @@ import { AccessCode } from './components/AccessCode/AccessCode'
 import AllLectures from './components/AllLectures/AllLectures'
 import { Contactus } from './components/ContactUs/Contactus'
 import { Profile } from './components/Profile/Profile'
+import { ForgetPassword } from './components/ForgetPassword/ForgetPassword'
+import { ResetPassword } from './components/ForgetPassword/ResetPassword'
 
 const queryClient = new QueryClient()
 
@@ -32,6 +34,8 @@ function App() {
         { path: '', element: <PrivateRoute><Home /></PrivateRoute> },
         { path: 'signup', element: <Signup /> },
         { path: 'login', element: <Login /> },
+        { path: 'forgetPassword', element: <ForgetPassword /> },
+        { path: 'resetPassword', element: <ResetPassword /> },
         { path: 'AllLectures', element: <PrivateRoute><AllLectures /></PrivateRoute> },
         { path: 'contact', element:<PrivateRoute> <Contactus /></PrivateRoute> },
         { path: 'profile', element:<PrivateRoute> <Profile /></PrivateRoute> },
