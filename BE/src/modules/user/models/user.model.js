@@ -41,13 +41,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    GOV :{
-        type : String,
-        required:true
+    GOV: {
+        type: String,
+        required: true
     },
-    city :{
-        type : String,
-        required:true
+    city: {
+        type: String,
+        required: true
     },
     role: {
         type: String,
@@ -85,20 +85,11 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: { type: Date, },
     userName: { type: String },
     age: { type: Number },
-    isBlocked:{  type: Boolean , default : null} ,
+    isBlocked: { type: Boolean, default: null },
     lectures: [{
-        lecture: {
+        lectureId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Lecture',
-            required: true
-        },
-        code: {
-            type: String,
-            required: true
-        },
-        logo: {
-            type: String,
-            required: true
         }
     }],
 },

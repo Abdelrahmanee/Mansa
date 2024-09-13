@@ -8,6 +8,7 @@ import pdfRepository from "../repos/pdf.repository.js";
 import { AppError } from "../../../utilies/error.js";
 import logoRepository from "../repos/logo.repository.js";
 import lectureRepository from "../repos/lecture.repository.js";
+import { userModel } from "../../user/models/user.model.js";
 
 
 class LectureService {
@@ -110,7 +111,12 @@ class LectureService {
 
 
     async linkStudentWithLecture({ studentId, lectureId, accessCodeId, hasPermanentAccess }) {
-        return await StudentLectureModel.create({ studentId, lectureId, accessCodeId, hasPermanentAccess, });
+        await StudentLectureModel.create({ studentId, lectureId, accessCodeId, hasPermanentAccess, });
+        await userModel.findByIdAndUpdate(
+            studentId,
+            { $push: { lectures: { lectureId } } } 
+        );
+
     }
 
 
