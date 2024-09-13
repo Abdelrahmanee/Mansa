@@ -38,7 +38,7 @@ router.patch('/update_password',
     validate(updatePasswordSchema), authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), updatePassword)
 
 router.get('/user_info', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), userInfo)
-router.get('/my_lectures', authenticate, authorize(ROLES.STUDENT), getMyLectures)
+router.get('/my_lectures', authenticate, authorize(ROLES.TEACHER, ROLES.STUDENT), getMyLectures)
 
 
 

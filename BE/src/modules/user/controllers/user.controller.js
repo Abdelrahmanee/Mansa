@@ -9,6 +9,7 @@ import { AppError, catchAsyncError } from "../../../utilies/error.js";
 import { generateOTP, sendEmail } from '../../../utilies/email.js';
 import { StudentLectureModel } from '../../lecture/models/StudentLecture.model.js';
 import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from '../../../utilies/htmlTemplate.js';
+import { lectureModel } from '../../lecture/models/lecture.model.js';
 dotenv.config()
 const defaultProfilePictureUrl = process.env.DEFAULT_PROFILE_PICTURE_URL
 
@@ -265,12 +266,22 @@ export const userInfo = catchAsyncError(async (req, res, next) => {
     res.status(200).json({ user })
 })
 export const getMyLectures = catchAsyncError(async (req, res, next) => {
-    const { _id: studentId } = req.user
-    const user = await userModel.findById(studentId)
-    if (!user) { return next(new AppError('User not found', 404)) };
-    const lectures = await StudentLectureModel.find({ studentId })
-    res.status(200).json({ lectures })
-})
+    const { _id: studentId } = req.user;
+
+    const user = await userModel.findById(studentId).populate({
+        path: 'lectures.lectureId',
+        model: 'Lecture',
+    });
+
+    if (!user) {
+        return next(new AppError('User not found', 404));
+    }
+
+    const lectures = user.lectures.map(lecture => lecture.lectureId);
+
+    res.status(200).json({ lectureCount: lectures.length, lectures });
+});
+
 
 // Get profile data for another user 
 
@@ -347,40 +358,55 @@ export const sendOTP = catchAsyncError(async (req, res, next) => {
 // reset password
 
 export const resetPassword = catchAsyncError(async (req, res, next) => {
-    const { new_password } = req.body
+
+    const { new_password } = req.body;
+
+    // Compare new password with existing password
     const isMatch = await new Promise((resolve, reject) => {
         req.user.comparePassword(new_password, (err, isMatch) => {
-            if (err) reject(err);
+            if (err) return reject(err);
             resolve(isMatch);
         });
     });
-    if (isMatch) return next(new AppError('try another password', 400));
+
+    // If the new password is the same as the old one, throw an error
+    if (isMatch) return next(new AppError('Please choose a different password.', 400));
+
+    // Set new password and reset relevant fields
     req.user.password = new_password;
-    req.user.resetPasswordExpires = null
+    req.user.resetPasswordExpires = null;
     req.user.otp = null;
+
+    // Save the updated user
     await req.user.save();
-    await sendEmail(user.email, "Otp verfication ", PASSWORD_RESET_SUCCESS_TEMPLATE, req.user.userName)
 
+    // Send email confirmation
+    await sendEmail(req.user.email, "Password Reset Successful", PASSWORD_RESET_SUCCESS_TEMPLATE, req.user.userName);
 
-    const formatUserResponse = (user) => {
-        return {
-            email: user.email.toLowerCase(),
-            userName: user.userName.toLowerCase(),
-            role: user.role.toLowerCase(),
-            status: user.status.toLowerCase(),
-            sex: user.sex.toLowerCase(),
-            age: user.age,
-            profilePicture: user.profilePicture,
-            mobileNumber: user.mobileNumber,
-            city: user.city,
-            GOV: user.GOV,
-            DOB: user.DOB,
-            _id: user._id
-        };
-    }
+    // Format user data for response
+    const formatUserResponse = (user) => ({
+        email: user.email.toLowerCase(),
+        userName: user.userName.toLowerCase(),
+        role: user.role.toLowerCase(),
+        status: user.status.toLowerCase(),
+        sex: user.sex.toLowerCase(),
+        age: user.age,
+        profilePicture: user.profilePicture,
+        mobileNumber: user.mobileNumber,
+        city: user.city,
+        GOV: user.GOV,
+        DOB: user.DOB,
+        _id: user._id
+    });
 
-    res.status(200).json({ status: "success", message: 'Password reset successfully', user: formatUserResponse(req.user) });
-})
+    // Respond with success message and user data
+    res.status(200).json({
+        status: "success",
+        message: 'Password reset successfully',
+        user: formatUserResponse(req.user)
+    });
+});
+
 
 // Get all accounts associated to a specific recovery Email 
 
