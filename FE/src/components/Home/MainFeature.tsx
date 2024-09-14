@@ -1,7 +1,7 @@
-import feature1 from "../../Assets/feature1.png"
-import feature2 from "../../Assets/feature2.png"
-import feature3 from "../../Assets/feature3.png"
-import feature4 from "../../Assets/feature4.png"
+import feature1 from "/assets/feature1.png"
+import feature2 from "/assets/feature2.png"
+import feature3 from "/assets/feature3.png"
+import feature4 from "/assets/feature4.png"
 
 export const MainFeature = () => {
   return <>
@@ -10,7 +10,7 @@ export const MainFeature = () => {
         {/* <div className='w-fit mx-auto'>
           <Chip color='blue' value='Features' className='!opacity-80 mb-2' />
         </div> */}
-        <div className='relative w-fit mx-auto'>
+        <div className='relative w-fit mx-auto'>~
           <h1
             className='relative font-Acme font-bold   text-5xl text-center  pb-0  text-shadow text-gray-800'
           >Main Feature

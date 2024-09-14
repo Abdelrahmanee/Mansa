@@ -1,4 +1,4 @@
-import logo from '../../Assets/Group.png'
+import logo from '/assets/group.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../Hooks/StoreHooks';

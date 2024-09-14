@@ -1,4 +1,4 @@
-import landing from '../../Assets/landing1.png'
+import landing from '/assets/landing1.png'
 
 export const Header = () => {
   return (
