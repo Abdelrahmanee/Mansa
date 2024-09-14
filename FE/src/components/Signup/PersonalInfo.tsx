@@ -2,6 +2,7 @@ import {  Control, FieldErrors } from "react-hook-form"
 import FormInputField from "./ReusableInputField";
 import { IFormInput } from "../../utils/types";
 
+
 type PersonalInfoProps = {
   control: Control<IFormInput>;
   errors: FieldErrors<IFormInput>;

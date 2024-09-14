@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import logo from '../../Assets/Group.png'
+import logo from '/assets/group.png'
 
 export const Footer = () => {
   return (

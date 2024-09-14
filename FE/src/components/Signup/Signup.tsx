@@ -1,4 +1,4 @@
-import logo from '../../Assets/Group.png';
+import logo from '/assets/group.png';
 import { ErrorResponse, IFormInput } from "../../utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "./signup.validations";
@@ -9,7 +9,7 @@ import { UploadPicture } from "./UploadPicture";
 import { PersonalInfo } from "./PersonalInfo";
 import { useForm } from "react-hook-form";
 import { signup } from "../../utils/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button, Steps } from "antd";
 import { useState } from "react";
@@ -18,6 +18,7 @@ export const Signup = () => {
 
   const [currentStep, setCurrentStep] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
 
   const { control, handleSubmit, formState: { errors }, trigger, reset, getValues } = useForm<IFormInput>({
     defaultValues: {
@@ -65,6 +66,7 @@ export const Signup = () => {
       toast.success('Signup successful!');
       setIsLoading(false);
       resetForm();
+      navigate('/login');
     },
     retry: false
   })
