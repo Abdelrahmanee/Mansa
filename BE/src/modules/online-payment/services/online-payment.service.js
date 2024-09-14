@@ -1,6 +1,7 @@
 // stripePaymentService.js
 import Stripe from 'stripe'
 import onlinePaymentRepository from '../repository/online-payment.repository.js';
+import { makeOnlineOrder } from '../controllers/online-payment.controller.js';
 
 
 class StripePaymentService {
@@ -34,19 +35,23 @@ class StripePaymentService {
                     },
                 ],
                 mode: 'payment',
-                success_url: 'https://kareememad52.github.io/ecommerce/',
-                cancel_url: 'https://ecommerce-five-beryl.vercel.app/',
+                success_url: 'https://mansasc-git-main-abdoooos-projects.vercel.app/',
+                cancel_url: 'https://mansasc-git-main-abdoooos-projects.vercel.app/contact',
                 client_reference_id: user._id.toString(), // Ensure user._id is a string
                 customer_email: user.email,
+                metadata: {
+                    lecture_id: lecture_id.toString(), // Add lecture_id to metadata
+                },
             });
         } catch (error) {
             throw new Error(`Stripe error: ${error.message}`);
         }
     }
 
-    handleWebhookEvent(event) {
+    async handleWebhookEvent(event) {
         console.log('Stripe event received:', event);
-        // Add logic to handle the webhook event
+        const data = event.data.object;
+        await makeOnlineOrder(data)
     }
 }
 

@@ -3,6 +3,7 @@ import feature2 from "/assets/feature2.png"
 import feature3 from "/assets/feature3.png"
 import feature4 from "/assets/feature4.png"
 
+
 export const MainFeature = () => {
   return <>
     <section className='my-10'>
