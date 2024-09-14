@@ -17,54 +17,54 @@ import dotenv from 'dotenv'
 dotenv.config()
 export const bootstrap = (app) => {
 
-    // const stripePaymentService = new StripePaymentService();
+    const stripePaymentService = new StripePaymentService();
 
-    // // Initialize the controller with dependency injection
-    // const webhookController = new WebhookController(stripePaymentService);
+    // Initialize the controller with dependency injection
+    const webhookController = new WebhookController(stripePaymentService);
 
-    // // Define the webhook route
-    // app.post('/webhook', (req, res) => {
-    //     console.log("Webhook");
+    // Define the webhook route
+    app.post('/webhook', (req, res) => {
+        console.log("Webhook");
 
-    //   webhookController.handleWebhook(req, res);
-    // });
+      webhookController.handleWebhook(req, res);
+    });
 
-    app.post("/webhook", express.raw({ type: "application/json" }),
+    // app.post("/webhook", express.raw({ type: "application/json" }),
 
-        catchAsyncError(async (request, response) => {
-            console.log(process.env.WEB_HOOK_SECRET+" sl");
+    //     catchAsyncError(async (request, response) => {
+    //         console.log(process.env.WEB_HOOK_SECRET+" sl");
 
-            const sig = request.headers["stripe-signature"];
+    //         const sig = request.headers["stripe-signature"];
 
-            let event;
+    //         let event;
 
-            try {
-                event = Stripe.webhooks.constructEvent(
-                    request.body,
-                    sig,
-                    process.env.WEB_HOOK_SECRET
-                );
-            } catch (err) {
-                response.status(400).send(`Webhook Error: ${err.message}`);
-                return;
-            }
+    //         try {
+    //             event = Stripe.webhooks.constructEvent(
+    //                 request.body,
+    //                 sig,
+    //                 process.env.WEB_HOOK_SECRET
+    //             );
+    //         } catch (err) {
+    //             response.status(400).send(`Webhook Error: ${err.message}`);
+    //             return;
+    //         }
 
-            // Handle the event
-            switch (event.type) {
-                case "checkout.session.completed":
-                    const data = event.data.object;
-                    console.log("data", { data });
+    //         // Handle the event
+    //         switch (event.type) {
+    //             case "checkout.session.completed":
+    //                 const data = event.data.object;
+    //                 console.log("data", { data });
 
-                    await makeOnlineOrder(data);
-                    break;
-                default:
-                    console.log(`Unhandled event type ${event.type}`);
-            }
+    //                 await makeOnlineOrder(data);
+    //                 break;
+    //             default:
+    //                 console.log(`Unhandled event type ${event.type}`);
+    //         }
 
-            // Return a 200 response to acknowledge receipt of the event
-            response.send();
-        })
-    );
+    //         // Return a 200 response to acknowledge receipt of the event
+    //         response.send();
+    //     })
+    // );
 
 
 
