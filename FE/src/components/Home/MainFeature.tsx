@@ -1,5 +1,5 @@
 import feature1 from "../../Assets/Feature1.png"
-import feature2 from "../../Assets/Feature2.png"
+import feature2 from "../../Assets/Feature1.png"
 import feature3 from "../../Assets/Feature3.png"
 import feature4 from "../../Assets/Feature4.png"
 
