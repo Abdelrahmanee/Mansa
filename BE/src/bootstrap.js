@@ -8,9 +8,21 @@ import { AppError } from './utilies/error.js'
 import { cron } from './utilies/cron.js'
 import { cloudinaryCofigration } from './utilies/cloudinary.js'
 import cookieParser from 'cookie-parser'
+import StripePaymentService from './modules/online-payment/services/online-payment.service.js'
+import { WebhookController } from './modules/online-payment/controllers/webhook.controller.js'
 
 
 export const bootstrap = (app) => {
+
+    const stripePaymentService = new StripePaymentService();
+
+    // Initialize the controller with dependency injection
+    const webhookController = new WebhookController(stripePaymentService);
+    
+    // Define the webhook route
+    app.post('/webhook', (req, res) => {
+      webhookController.handleWebhook(req, res);
+    });
 
     cloudinaryCofigration();
 
@@ -28,12 +40,12 @@ export const bootstrap = (app) => {
 
 
     app.use(cors(corsOptions));
-      
-      
+
+
     app.use(morgan('dev'))
 
     // cron();
-    
+
     app.use('/api/v1', v1Router)
 
 
