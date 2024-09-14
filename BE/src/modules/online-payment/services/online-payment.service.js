@@ -52,7 +52,6 @@ class StripePaymentService {
         console.log('Stripe event received:', event);
         const data = event.data.object;
         await makeOnlineOrder(data)
-        // Add logic to handle the webhook event
     }
 }
 
