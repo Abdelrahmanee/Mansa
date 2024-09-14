@@ -35,8 +35,8 @@ class StripePaymentService {
                     },
                 ],
                 mode: 'payment',
-                success_url: 'https://mansasc-git-main-abdoooos-projects.vercel.app/',
-                cancel_url: 'https://mansasc-git-main-abdoooos-projects.vercel.app/contact',
+                success_url: `https://mansasc-git-main-abdoooos-projects.vercel.app/lecture/${lecture_id}/access-code`,
+                cancel_url: 'https://mansasc-git-main-abdoooos-projects.vercel.app/',
                 client_reference_id: user._id.toString(), // Ensure user._id is a string
                 customer_email: user.email,
                 metadata: {
@@ -51,6 +51,7 @@ class StripePaymentService {
     async handleWebhookEvent(event) {
         console.log('Stripe event received:', event);
         const data = event.data.object;
+        console.log(data.client_reference_id);
         await makeOnlineOrder(data)
     }
 }

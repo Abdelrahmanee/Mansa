@@ -25,13 +25,10 @@ class PaymentController {
   }
 }
 export const makeOnlineOrder = async (data) => {
-  const { client_reference_id: userId, metadata: { lecture_id } } = data;  // Correctly destructuring lecture_id and userId
-
-  console.log({ userId, lecture_id });
-  console.log(data._id);  // Assuming this logs the order/session ID from Stripe
+  const { client_reference_id: userId, metadata: { lecture_id } , customer_email } = data;  // Correctly destructuring lecture_id and userId
 
   // Fetch user and lecture details
-  const user = await userModel.findById(userId);
+  const user = await userModel.findOne({email : customer_email});
   const lecture = await lectureModel.findById(lecture_id);
 
   if (!user) throw new AppError("User not found", 404);
@@ -39,14 +36,16 @@ export const makeOnlineOrder = async (data) => {
 
   const code = generateUniqueCode();
   if (!code) throw new AppError("Code is required", 400);
-
+  
   // Generate the lecture code and store it
   const generatedCode = await lectureService.generateLectureCode({
     lectureId: lecture._id,  
     code,
     isUsed: false
   });
-
+  
+  console.log(user.email);
+  console.log(user);
   // Send email to the user with the lecture code
   await sendEmail(
     user.email,
