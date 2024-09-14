@@ -1,4 +1,4 @@
-import about from '../../Assets/about.png'
+import about from '../../Assets/About.png'
 export const AboutUs = () => {
   return (
     <section className='w-full md:w-[80%] mx-auto my-10'>

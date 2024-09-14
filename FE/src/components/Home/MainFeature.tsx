@@ -1,7 +1,7 @@
-import feature1 from "../../Assets/feature1.png"
-import feature2 from "../../Assets/feature2.png"
-import feature3 from "../../Assets/feature3.png"
-import feature4 from "../../Assets/feature4.png"
+import feature1 from "../../Assets/Feature1.png"
+import feature2 from "../../Assets/Feature2.png"
+import feature3 from "../../Assets/Feature3.png"
+import feature4 from "../../Assets/Feature4.png"
 
 export const MainFeature = () => {
   return <>
