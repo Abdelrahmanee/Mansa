@@ -13,7 +13,7 @@ import mongoose from "mongoose";
 
 export const login = catchAsyncError(async (req, res, next) => {
     const user = req.user;
-    
+
     // Check if the user is blocked
     await AuthService.checkUserBlocked(user);
 
@@ -53,9 +53,9 @@ export const signup = catchAsyncError(async (req, res, next) => {
         // Side effect: Send verification email
         try {
             let x = await AuthService.generateEmailVerificationToken(user.email);
-            
+
             user.emailSent = true; // Email sent successfully
-            
+
         } catch (emailError) {
             console.error("Failed to send verification email:", emailError);
             user.emailSent = false; // Mark as email not sent
@@ -88,17 +88,7 @@ export const signup = catchAsyncError(async (req, res, next) => {
         session.endSession();
 
         return next(new AppError(error.message, 400));
-        // return next(new AppError('Registration failed, please try again later', 500));
     }
-
-
-    // Detailed error handling
-
-
-
-
-    // Generic error message
-    // return next(new AppError('Registration failed, please try again later', 500));
 
 });
 
