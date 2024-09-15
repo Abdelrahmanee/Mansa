@@ -12,9 +12,8 @@ const router = Router()
 
 
 
-router.get('/getLectureByID/:lectureId', authenticate, validate(getLectureByIdSchema), getLectureById)
 
-router.get('/getAllLectures', authenticate, authorize('teacher', 'student'), getAllLectures)
+router.get('/', authenticate, authorize('teacher', 'student'), getAllLectures)
 
 router.post('/add_lecture',
     authenticate,
@@ -55,6 +54,7 @@ router.post('/check_student_access',
     isLectureExists,
     checkStudentAccess
 )
+router.get('/getLectureByID/:lectureId', authenticate, validate(getLectureByIdSchema), getLectureById)
 
 
 
