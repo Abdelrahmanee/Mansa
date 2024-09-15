@@ -7,7 +7,7 @@ import {
   User,
 } from "./types";
 
-const baseUrl: string = "http://localhost:3000/api/v1";
+const baseUrl: string = "https://mansasc-system.vercel.app/api/v1";
 
 // create new user
 export const signup = async (formData: FormData): Promise<unknown> => {
