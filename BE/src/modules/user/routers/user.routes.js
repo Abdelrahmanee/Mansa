@@ -23,21 +23,21 @@ router.patch('/update_profilePicture',
     uploadSingle('profilePicture'),
     validate(updateProfilePictureSchema),
     authenticate,
-    authorize(ROLES.STUDENT, ROLES.ADMIN),
+    authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN),
     updateProfilePicture
 )
 router.patch('/update_email',
     validate(updateAccountEmailSchema),
     authenticate,
-    authorize(ROLES.STUDENT, ROLES.ADMIN),
+    authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN),
     updateAccountEmail
 )
-router.delete('/delete_account', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), deleteAccount)
+router.delete('/delete_account', authenticate, authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN), deleteAccount)
 
 router.patch('/update_password',
-    validate(updatePasswordSchema), authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), updatePassword)
+    validate(updatePasswordSchema), authenticate, authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN), updatePassword)
 
-router.get('/user_info', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), userInfo)
+router.get('/user_info', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN ,ROLES.TEACHER), userInfo)
 router.get('/my_lectures', authenticate, authorize(ROLES.TEACHER, ROLES.STUDENT), getMyLectures)
 
 
@@ -50,7 +50,7 @@ router.put('/reset_password', validate(resetPasswordSchema), isUserExist, checkU
 
 
 router.get('/getAllAccountsAssociated',
-    validate(recoveryEmailSchema), authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), getAllAccountsAssociated)
+    validate(recoveryEmailSchema), authenticate, authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN), getAllAccountsAssociated)
 
 
 // معملتش الروتس بتاعتهم مش عارف محتاجهم ولا لا

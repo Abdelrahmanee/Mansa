@@ -82,3 +82,9 @@ export interface LectureByID {
   status: string;
   data: Lecture;
 }
+
+
+export interface StudentLecturesResponse {
+  lectureCount: number
+  lectures: Lecture[];
+}
