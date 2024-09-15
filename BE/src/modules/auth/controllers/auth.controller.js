@@ -24,13 +24,14 @@ export const login = catchAsyncError(async (req, res, next) => {
     await AuthService.updateUserLoginStatus(user);
 
     // Set the token in cookies
-    AuthService.setCookie(res, token);
+    // AuthService.setCookie(res, token);
 
     // Send response with user data
     res.status(200).json({
         status: 'success',
         message: "Signed in successfully",
         user: AuthService.formatUserResponse(user),
+        token
     });
 });
 
