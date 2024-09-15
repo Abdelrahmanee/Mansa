@@ -23,6 +23,7 @@ export class WebhookController {
       // Handle the event
       switch (event.type) {
         case 'checkout.session.completed':
+          
           this.stripePaymentService.handleWebhookEvent(event);
           break;
         default:
