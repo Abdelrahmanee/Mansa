@@ -52,6 +52,7 @@ function Navbar() {
         <ul className="menu menu-horizontal px-1">
           <li><Link to='/'>Home</Link></li>
           <li><Link to='/allLectures'>Lectures</Link></li>
+          <li><Link to='/mylectures'>My Lectures</Link></li>
           <li><Link to='/contact'>Contact</Link></li>
           <li><Link to='/'>About us</Link></li>
         </ul>

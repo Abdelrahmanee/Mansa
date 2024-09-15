@@ -2,11 +2,12 @@ import axios from "axios";
 import {
   AllLectureResponse,
   LectureByID,
+  StudentLecturesResponse,
   updateUserResponse,
   User,
 } from "./types";
 
-const baseUrl: string = "https://mansasc-system.vercel.app/api/v1";
+const baseUrl: string = "http://localhost:3000/api/v1";
 
 // create new user
 export const signup = async (formData: FormData): Promise<unknown> => {
@@ -138,7 +139,17 @@ export const setNewPassword = async (data: {
 export const getLectureByID = async (
   lectureId: string
 ): Promise<LectureByID> => {
-  const res = await axios.get(`${baseUrl}/lectures/getLectureByID/${lectureId}`, {
+  const res = await axios.get(
+    `${baseUrl}/lectures/getLectureByID/${lectureId}`,
+    {
+      withCredentials: true,
+    }
+  );
+  return res.data;
+};
+
+export const getUserLectures = async (): Promise<StudentLecturesResponse> => {
+  const res = await axios.get(`${baseUrl}/users/my_lectures`, {
     withCredentials: true,
   });
   return res.data;

@@ -22,11 +22,16 @@ import { Contactus } from './components/ContactUs/Contactus'
 import { Profile } from './components/Profile/Profile'
 import { ForgetPassword } from './components/ForgetPassword/ForgetPassword'
 import { ResetPassword } from './components/ForgetPassword/ResetPassword'
+import { Mylectures } from './components/MyLectures/Mylectures'
+
+
 
 const queryClient = new QueryClient()
 
 
 function App() {
+
+
 
   const router = createBrowserRouter([
     {
@@ -37,15 +42,16 @@ function App() {
         { path: 'forgetPassword', element: <ForgetPassword /> },
         { path: 'resetPassword', element: <ResetPassword /> },
         { path: 'AllLectures', element: <PrivateRoute><AllLectures /></PrivateRoute> },
-        { path: 'contact', element:<PrivateRoute> <Contactus /></PrivateRoute> },
-        { path: 'profile', element:<PrivateRoute> <Profile /></PrivateRoute> },
+        { path: 'contact', element: <PrivateRoute> <Contactus /></PrivateRoute> },
+        { path: 'profile', element: <PrivateRoute> <Profile /></PrivateRoute> },
+        { path: 'mylectures', element: <PrivateRoute> <Mylectures /></PrivateRoute> },
         {
           path: 'lecture/:lectureId',
-          element: <LectureRoute />,  
+          element: <LectureRoute />,
           children: [
-            { index: true, element: <LectureDetials /> },   
-            { path: "videos", element: <LectureVideo /> },  
-            { path: "pdfs", element: <LecturePDFs /> },        
+            { index: true, element: <LectureDetials /> },
+            { path: "videos", element: <LectureVideo /> },
+            { path: "pdfs", element: <LecturePDFs /> },
           ]
         },
         { path: "lecture/:lectureId/access-code", element: <AccessCode /> },
