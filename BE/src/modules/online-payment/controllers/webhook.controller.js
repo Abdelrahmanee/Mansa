@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-
-
+import dotenv from 'dotenv'
+dotenv.config()
 export class WebhookController {
     constructor(stripePaymentService) {
       this.stripePaymentService = stripePaymentService;
