@@ -12,9 +12,9 @@ export const authorize = (...roles) => {
 }
 
 export const authenticate = catchAsyncError(async (req, res, next) => {
-    const token = req.cookies.authToken    
+    const token = req.cookies.authToken
 
-    
+
 
     if (!token) next(new AppError("UnAuthenticated", 401))
 
@@ -22,15 +22,15 @@ export const authenticate = catchAsyncError(async (req, res, next) => {
     try {
         // Use the synchronous version of jwt.verify to avoid issues with async behavior
         userPayload = jwt.verify(token, process.env.SECRET_KEY);
-    } catch (error) {
-        // If there's an error in token verification, handle it
+    } catch (error) {t
+        // If there's an error in token verification, handle i
         return next(new AppError(error.message, 498));
     }
 
 
     const user = await userModel.findById(userPayload._id)
     if (!user) return next(new AppError("user not found", 404))
-    if (user.isLoggedOut) return next(new AppError("you must login first", 401))
+    if (user.status === 'offline') return next(new AppError("you must login first", 401))
     if (user.status === 'blocked') return next(new AppError("you have been blocked , contact us", 403))
     if (user.status === 'deleted') return next(new AppError("login again", 403))
 
