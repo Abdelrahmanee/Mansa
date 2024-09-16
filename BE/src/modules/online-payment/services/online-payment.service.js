@@ -50,6 +50,8 @@ class StripePaymentService {
 
     async handleWebhookEvent(event) {
         const data = event.data.object;
+        console.log(data);
+        
         await makeOnlineOrder(data)
     }
 }

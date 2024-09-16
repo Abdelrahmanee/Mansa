@@ -16,8 +16,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 export const bootstrap = (app) => {
 
-    const stripePaymentService = new StripePaymentService();
+    app.use(express.raw({ type: 'application/json' }));
 
+    const stripePaymentService = new StripePaymentService();
+              
     // Initialize the controller with dependency injection
     const webhookController = new WebhookController(stripePaymentService);
 

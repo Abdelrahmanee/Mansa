@@ -66,7 +66,7 @@ router.delete('/logout', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), us
 // under thinking (Admin Only has array of blocked Users and can remove user from block lsit)
 
 router.get('/blocked_list', authenticate, authorize(ROLES.ADMIN), getBlockedUsers)
-router.delete('/remove_from_block_list', authenticate, authorize(ROLES.ADMIN),removeFromBlockList )
+router.delete('/remove_from_block_list/:userId', authenticate, authorize(ROLES.ADMIN),removeFromBlockList )
 router.post('/block_user/:id', authenticate, authorize(ROLES.ADMIN), blockUser)
 
 

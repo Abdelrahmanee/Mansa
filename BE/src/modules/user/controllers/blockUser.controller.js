@@ -19,10 +19,7 @@ export const blockUser = catchAsyncError(async (req, res, next) => {
 // Unblock a user
 export const removeFromBlockList = catchAsyncError(async (req, res, next) => {
     const { _id: adminId } = req.user;
-    const { userId  } = req.body;
-    console.log(req.body.userId);
-    console.log(userId);
-    
+    const { userId  } = req.params;
     await blockService.removeUserFromBlockList(adminId, userId);
 
     res.status(200).json({
