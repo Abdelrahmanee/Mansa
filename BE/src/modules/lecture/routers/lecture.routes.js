@@ -5,6 +5,7 @@ import { uploadMultiple, uploadSingle } from "../../../middelwares/upload.middel
 import { addLectureSchema, checkingAccess, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
 import { addLecture, checkStudentAccess, deleteLecture, generateLectureCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
 import { isLectureExists } from "../middlewares/lecture.middleware.js";
+import { ROLES } from "../../../utilies/enums.js";
 
 
 const router = Router()
@@ -17,7 +18,7 @@ router.get('/', authenticate, authorize('teacher', 'student'), getAllLectures)
 
 router.post('/add_lecture',
     authenticate,
-    authorize('teacher'),
+    authorize(ROLES.TEACHER , ROLES.ADMIN),
     // uploadSingle('logo'),
     uploadMultiple([{ name: 'logo', maxCount: 1 }, { name: 'videos', maxCount: 10 }, { name: 'pdfs', maxCount: 10 }]),
     validate(addLectureSchema),
@@ -25,14 +26,14 @@ router.post('/add_lecture',
 )
 router.post('/delete_lecture',
     authenticate,
-    authorize('teacher'),
+    authorize(ROLES.TEACHER , ROLES.ADMIN),
     validate(deleteLectureSchema),
     deleteLecture
 )
 
 router.post('/generate_Access_code',
     authenticate,
-    authorize('teacher'),
+    authorize(ROLES.TEACHER , ROLES.ADMIN),
     validate(generateAccessCode),
     isLectureExists,
     generateLectureCode
@@ -41,7 +42,7 @@ router.post('/generate_Access_code',
 
 router.post('/lecture_access_request',
     authenticate,
-    authorize('teacher', 'student'),
+    authorize(ROLES.TEACHER , ROLES.ADMIN, ROLES.STUDENT),
     validate(lectureAccessRequest),
     isLectureExists,
     grantStudentAccess
@@ -49,7 +50,7 @@ router.post('/lecture_access_request',
 
 router.post('/check_student_access',
     authenticate,
-    authorize('teacher', 'student'),
+    authorize(ROLES.TEACHER , ROLES.ADMIN, ROLES.STUDENT),
     validate(checkingAccess),
     isLectureExists,
     checkStudentAccess

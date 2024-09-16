@@ -43,7 +43,7 @@ export const getLectures = async (): Promise<{
   message: string;
 }> => {
   try {
-    const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
+    const response = await axios.get(`${baseUrl}/lectures`, {
       withCredentials: true,
     });
     return response.data;
