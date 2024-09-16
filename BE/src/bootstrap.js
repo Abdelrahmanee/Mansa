@@ -16,7 +16,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 export const bootstrap = (app) => {
 
-    app.use(express.raw({ type: 'application/json' }));
 
     const stripePaymentService = new StripePaymentService();
               
@@ -24,7 +23,7 @@ export const bootstrap = (app) => {
     const webhookController = new WebhookController(stripePaymentService);
 
     // Define the webhook route
-    app.post('/webhook', (req, res) => {
+    app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
         webhookController.handleWebhook(req, res);
     });
 
