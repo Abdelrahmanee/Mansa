@@ -11,7 +11,6 @@ import cookieParser from 'cookie-parser'
 import StripePaymentService from './modules/online-payment/services/online-payment.service.js'
 import { WebhookController } from './modules/online-payment/controllers/webhook.controller.js'
 import { makeOnlineOrder } from './modules/online-payment/controllers/online-payment.controller.js'
-import Stripe from 'stripe'
 import dotenv from 'dotenv'
 
 dotenv.config()

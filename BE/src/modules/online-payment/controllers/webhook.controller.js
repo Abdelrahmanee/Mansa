@@ -1,3 +1,4 @@
+import Stripe from "stripe";
 
 
 export class WebhookController {
@@ -10,7 +11,7 @@ export class WebhookController {
       let event;
   
       try {
-        event = stripe.webhooks.constructEvent(
+        event = Stripe.webhooks.constructEvent(
           request.body,
           sig,
           process.env.WEBHOOK_SECRET
