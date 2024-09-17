@@ -15,7 +15,6 @@ export const authenticate = catchAsyncError(async (req, res, next) => {
     const token = req.header('token')    
 
     
-
     if (!token) throw new AppError("Unathenticated", 401)
 
     let userPayload = null;

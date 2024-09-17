@@ -33,7 +33,7 @@ export const Mylectures = () => {
           left-[12.5%] -z-10'></div>
         </div>
       </div>
-      {isLoading ? <div className='w-[80%] mx-auto mt-10 min-h-[250px] flex justify-center items-center'><Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} size="large" /></div> : (data?.lectures.map((lecture) => <Row gutter={0} key={lecture._id} className=" md:w-[70%] mx-auto border border-blue-200 hover:border-blue-500 transition-all duration-300 rounded-md shadow border-spacing-1">
+      {isLoading ? <div className='w-[80%] mx-auto mt-10 min-h-[250px] flex justify-center items-center'><Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} size="large" /></div> : (data?.lectures.map((lecture) => <Row gutter={0} key={lecture._id} className="mb-4 md:w-[70%] mx-auto border border-blue-200 hover:border-blue-500 transition-all duration-300 rounded-md shadow border-spacing-1">
         <Col xs={24} md={9} className=" p-3">
           <img className="w-full h-full rounded" src={lecture.logo} alt={lecture.title} />
         </Col>

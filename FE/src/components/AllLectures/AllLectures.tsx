@@ -38,7 +38,7 @@ const AllLectures: React.FC = () => {
         </div>
       </div>
       <Row gutter={[16, 16]}>
-        {data?.data.slice(0, 6).map((lecture, index) => (
+        {data?.data.map((lecture, index) => (
           <Col lg={8} sm={24} xs={24} key={lecture._id}>
             {index === 0 || index === 2 ? (
               <Badge.Ribbon text="Best Seller">

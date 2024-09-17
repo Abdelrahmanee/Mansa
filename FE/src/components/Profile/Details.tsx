@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { AxiosError, isAxiosError } from 'axios';
 import { ErrorResponse, updateUserResponse } from '../../utils/types';
 import { toast } from 'react-toastify';
-import { setUser } from '../../Store/AuthSlice';
+import { updateUser as updateUserState } from '../../Store/AuthSlice';
 
 
 type FormData = z.infer<typeof validationSchema>;
@@ -107,8 +107,7 @@ export const UserProfileDetailsPage = () => {
     }
 
     const res = await mutation.mutateAsync(changedValues) as updateUserResponse
-    console.log(res);
-    dispatch(setUser(res.data))
+    dispatch(updateUserState(res.data))
 
   };
 
@@ -154,91 +153,91 @@ export const UserProfileDetailsPage = () => {
             </div>
           </Col>
           <Col xs={24} lg={12}>
-          <div className="relative w-full">
-            <Controller
-              name='lastName'
-              control={control}
-              render={({ field }) => (
-                <Form.Item<z.infer<typeof validationSchema>>
-                  label="Last name"
-                >
-                  <Input {...field} />
-                </Form.Item>
-              )}
-            />
-            <span className={`absolute ${errors.lastName ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
+            <div className="relative w-full">
+              <Controller
+                name='lastName'
+                control={control}
+                render={({ field }) => (
+                  <Form.Item<z.infer<typeof validationSchema>>
+                    label="Last name"
+                  >
+                    <Input {...field} />
+                  </Form.Item>
+                )}
+              />
+              <span className={`absolute ${errors.lastName ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
                 {errors.lastName && errors.lastName.message}
               </span>
             </div>
           </Col>
           <Col xs={24} lg={24}>
-          <div className="relative w-full">
-            <Controller
-              name='mobileNumber'
-              control={control}
-              render={({ field }) => (
-                <Form.Item<z.infer<typeof validationSchema>>
-                  label="Phone"
-                >
-                  <Input {...field} />
-                </Form.Item>
-              )}
-            />
-            <span className={`absolute ${errors.mobileNumber ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
+            <div className="relative w-full">
+              <Controller
+                name='mobileNumber'
+                control={control}
+                render={({ field }) => (
+                  <Form.Item<z.infer<typeof validationSchema>>
+                    label="Phone"
+                  >
+                    <Input {...field} />
+                  </Form.Item>
+                )}
+              />
+              <span className={`absolute ${errors.mobileNumber ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
                 {errors.mobileNumber && errors.mobileNumber.message}
               </span>
             </div>
           </Col>
           <Col xs={24} lg={8}>
-          <div className="relative w-full">
-            <Controller
-              name='DOB'
-              control={control}
-              render={({ field }) => (
-                <Form.Item<z.infer<typeof validationSchema>>
-                  label="Date of Birth"
-                >
-                  <Input {...field} />
-                </Form.Item>
-              )}
-            />
-            <span className={`absolute ${errors.DOB ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
+            <div className="relative w-full">
+              <Controller
+                name='DOB'
+                control={control}
+                render={({ field }) => (
+                  <Form.Item<z.infer<typeof validationSchema>>
+                    label="Date of Birth"
+                  >
+                    <Input {...field} />
+                  </Form.Item>
+                )}
+              />
+              <span className={`absolute ${errors.DOB ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
                 {errors.DOB && errors.DOB.message}
               </span>
             </div>
           </Col>
           <Col xs={24} lg={8}>
-          <div className="relative w-full">
-            <Controller
-              name='city'
-              control={control}
-              render={({ field }) => (
-                <Form.Item<z.infer<typeof validationSchema>>
-                  label="City"
-                >
-                  <Input {...field} />
-                </Form.Item>
-              )}
-            />
-            <span className={`absolute ${errors.city ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
+            <div className="relative w-full">
+              <Controller
+                name='city'
+                control={control}
+                render={({ field }) => (
+                  <Form.Item<z.infer<typeof validationSchema>>
+                    label="City"
+                  >
+                    <Input {...field} />
+                  </Form.Item>
+                )}
+              />
+              <span className={`absolute ${errors.city ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
                 {errors.city && errors.city.message}
               </span>
             </div>
           </Col>
           <Col xs={24} lg={8}>
-          <div className="relative w-full">
-            <Controller
-              name='GOV'
-              control={control}
-              render={({ field }) => (
-                <Form.Item<z.infer<typeof validationSchema>>
-                  label="GOV"
-                >
-                  <Input {...field} />
-                </Form.Item>
-              )}
-            />
-            <span className={`absolute ${errors.GOV ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
+            <div className="relative w-full">
+              <Controller
+                name='GOV'
+                control={control}
+                render={({ field }) => (
+                  <Form.Item<z.infer<typeof validationSchema>>
+                    label="GOV"
+                  >
+                    <Input {...field} />
+                  </Form.Item>
+                )}
+              />
+              <span className={`absolute ${errors.GOV ? 'top-full opacity-100 ' : 'top-0 opacity-0 '} transition-all duration-300 z-10  text-red-500 md:min-w-[300px] text-xs`}>
                 {errors.GOV && errors.GOV.message}
               </span>
             </div>

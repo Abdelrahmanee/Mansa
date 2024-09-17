@@ -2,12 +2,18 @@ import axios from "axios";
 import {
   AllLectureResponse,
   LectureByID,
+  LoginResponse,
   StudentLecturesResponse,
   updateUserResponse,
   User,
 } from "./types";
+import api from "./apiRequestWithToken";
 
-const baseUrl: string = "http://localhost:3000/api/v1";
+const baseUrl: string = "https://mansasc-system.vercel.app/api/v1";
+
+// const headers: { token: string } = {
+//   token: localStorage.getItem("token") || "",
+// };
 
 // create new user
 export const signup = async (formData: FormData): Promise<unknown> => {
@@ -31,10 +37,8 @@ export const signup = async (formData: FormData): Promise<unknown> => {
 export const login = async (data: {
   identifier: string;
   password: string;
-}): Promise<unknown> => {
-  const res = await axios.post(`${baseUrl}/auth/login`, data, {
-    withCredentials: true, // Include credentials to handle cookies
-  });
+}): Promise<LoginResponse> => {
+  const res = await axios.post(`${baseUrl}/auth/login`, data);
   return res.data;
 };
 
@@ -43,9 +47,7 @@ export const getLectures = async (): Promise<{
   message: string;
 }> => {
   try {
-    const response = await axios.get(`${baseUrl}/lectures/getAllLectures`, {
-      withCredentials: true,
-    });
+    const response = await api.get("/lectures");
     return response.data;
   } catch (error) {
     console.log(error);
@@ -63,15 +65,9 @@ export const CheckStudentAccess = async (
   message: string;
   hasAccess: boolean;
 }> => {
-  const response = await axios.post(
-    `${baseUrl}/lectures/check_student_access`,
-    {
-      lectureId,
-    },
-    {
-      withCredentials: true,
-    }
-  );
+  const response = await api.post(`/lectures/check_student_access`, {
+    lectureId,
+  });
   return response.data;
 };
 
@@ -82,16 +78,10 @@ export const giveUserAccess = async (
   status: string;
   message: string;
 }> => {
-  const response = await axios.post(
-    `${baseUrl}/lectures/lecture_access_request`,
-    {
-      lectureId,
-      code,
-    },
-    {
-      withCredentials: true,
-    }
-  );
+  const response = await api.post(`/lectures/lecture_access_request`, {
+    lectureId,
+    code,
+  });
   return response.data;
 };
 
@@ -106,9 +96,7 @@ export const updateUser = async (
     DOB: string;
   }>
 ): Promise<updateUserResponse> => {
-  const res = await axios.put(`${baseUrl}/users/update_account`, data, {
-    withCredentials: true,
-  });
+  const res = await api.put(`${baseUrl}/users/update_account`, data);
   return res.data;
 };
 
@@ -139,18 +127,13 @@ export const setNewPassword = async (data: {
 export const getLectureByID = async (
   lectureId: string
 ): Promise<LectureByID> => {
-  const res = await axios.get(
-    `${baseUrl}/lectures/getLectureByID/${lectureId}`,
-    {
-      withCredentials: true,
-    }
-  );
+  const res = await api.get(`/lectures/getLectureByID/${lectureId}`);
   return res.data;
 };
 
 export const getUserLectures = async (): Promise<StudentLecturesResponse> => {
-  const res = await axios.get(`${baseUrl}/users/my_lectures`, {
-    withCredentials: true,
-  });
+  const res = await api.get(`/users/my_lectures`);
   return res.data;
 };
+
+
