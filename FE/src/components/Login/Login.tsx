@@ -23,7 +23,18 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const validationSchema = z.object({
-    identifier: z.string({ message: "Email Is Required " }).email({ message: 'Please enter a valid identifier' }),
+    identifier: z.string().refine((value) => {
+      // Regular expression for validating phone numbers (example: must be 10 digits)
+      const isPhoneNumber = /^\d{11}$/.test(value); 
+      
+      // Check if the value is a valid email
+      const isEmail = z.string().email().safeParse(value).success;
+  
+      // Pass validation if it's either a valid phone number or a valid email
+      return isPhoneNumber || isEmail;
+    }, {
+      message: "Please enter a valid email or phone number"
+    }),
     password: z.string().min(6),
   });
 
@@ -66,7 +77,7 @@ export const Login = () => {
   const onSubmit = async (data: z.infer<typeof validationSchema>) => {
     setIsLoading(true)
     const res = await mutation.mutateAsync(data) as LoginResponse
-    dispatch(setUser(res.user))
+    dispatch(setUser({ user: res.user, token: res.token }))
 
   }
 

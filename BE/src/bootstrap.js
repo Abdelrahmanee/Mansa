@@ -30,20 +30,10 @@ export const bootstrap = (app) => {
 
     cloudinaryCofigration();
 
-    app.use(cookieParser())
     app.use(express.json())
-    // Allow all origins
-    const corsOptions = {
-        origin: (origin, callback) => {
-            callback(null, true); // Allow any origin dynamically
-        },
-        credentials: true, // Allow credentials (cookies)
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
-    };
 
 
-    app.use(cors(corsOptions));
+    app.use(cors());
 
 
     app.use(morgan('dev'))

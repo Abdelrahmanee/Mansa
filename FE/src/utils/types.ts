@@ -18,7 +18,10 @@ export interface ErrorResponse {
 }
 
 export interface LoginResponse {
+  status:string;
+  message: string;
   user: User;
+  token: string;
 }
 
 export interface IFormInput {

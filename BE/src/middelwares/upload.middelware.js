@@ -9,7 +9,7 @@ const memoryStorage = multer.memoryStorage();
 const cloudinaryStorage = {
   _handleFile(req, file, cb) {
     if (file.mimetype.startsWith('video') || file.mimetype === 'application/pdf') {
-      const resourceType = file.mimetype.startsWith('video') ? 'video' : 'raw';
+      const resourceType = file.mimetype.startsWith('video') ? 'video' : 'auto';
 
       // Upload the file directly to Cloudinary
       const uploadStream = cloudinary.uploader.upload_stream({ resource_type: resourceType, folder: 'Mansa/Lectures' }, (error, result) => {
