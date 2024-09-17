@@ -1,5 +1,6 @@
-
-
+import Stripe from "stripe";
+import dotenv from 'dotenv'
+dotenv.config()
 export class WebhookController {
     constructor(stripePaymentService) {
       this.stripePaymentService = stripePaymentService;
@@ -10,7 +11,7 @@ export class WebhookController {
       let event;
   
       try {
-        event = stripe.webhooks.constructEvent(
+        event = Stripe.webhooks.constructEvent(
           request.body,
           sig,
           process.env.WEBHOOK_SECRET
@@ -23,7 +24,7 @@ export class WebhookController {
       // Handle the event
       switch (event.type) {
         case 'checkout.session.completed':
-          
+          console.log(event.type);
           this.stripePaymentService.handleWebhookEvent(event);
           break;
         default:

@@ -25,7 +25,7 @@ class PaymentController {
   }
 }
 export const makeOnlineOrder = async (data) => {
-  const { client_reference_id: userId, metadata: { lecture_id } , customer_email } = data;  // Correctly destructuring lecture_id and userId
+  const { client_reference_id: userId, metadata: { lecture_id }, customer_email } = data;  // Correctly destructuring lecture_id and userId
 
   // Fetch user and lecture details
   const user = await userModel.findById(userId);
@@ -36,14 +36,14 @@ export const makeOnlineOrder = async (data) => {
 
   const code = generateUniqueCode();
   if (!code) throw new AppError("Code is required", 400);
-  
+
   // Generate the lecture code and store it
   const generatedCode = await lectureService.generateLectureCode({
-    lectureId: lecture._id,  
+    lectureId: lecture._id,
     code,
     isUsed: false
   });
-  
+
   console.log(user.email);
   console.log(user);
   // Send email to the user with the lecture code

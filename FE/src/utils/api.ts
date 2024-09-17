@@ -47,7 +47,9 @@ export const getLectures = async (): Promise<{
   message: string;
 }> => {
   try {
+
     const response = await api.get("/lectures");
+
     return response.data;
   } catch (error) {
     console.log(error);
