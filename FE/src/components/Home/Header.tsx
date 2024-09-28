@@ -34,7 +34,7 @@ export const Header = () => {
           </a>
         </div>
         <div className='md:w-1/2'>
-          <img  src={landing} alt='mansa' className='w-full h-full' />
+          <img  loading="lazy" src={landing} alt='mansa' className='w-full h-full' />
         </div>
       </div>
     </>

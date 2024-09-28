@@ -9,11 +9,8 @@ import {
 } from "./types";
 import api from "./apiRequestWithToken";
 
-const baseUrl: string = "https://mansasc-system.vercel.app/api/v1";
+const baseUrl: string = "http://localhost:3000/api/v1";
 
-// const headers: { token: string } = {
-//   token: localStorage.getItem("token") || "",
-// };
 
 // create new user
 export const signup = async (formData: FormData): Promise<unknown> => {
@@ -47,7 +44,6 @@ export const getLectures = async (): Promise<{
   message: string;
 }> => {
   try {
-
     const response = await api.get("/lectures");
 
     return response.data;
@@ -138,4 +134,24 @@ export const getUserLectures = async (): Promise<StudentLecturesResponse> => {
   return res.data;
 };
 
+export const BuyAccessCode = async (
+  lectureId: string
+): Promise<{
+  status: string;
+  message: string;
+}> => {
+  const res = await api.post(`/payment/online-payment`, {
+    lectureId,
+  });
+  return res.data;
+};
 
+// get all students
+export const getAllStudents = async (): Promise<{
+  status: string;
+  data: User[];
+  message: string;
+}> => {
+  const res = await api.get(`/users/get-all-students`);
+  return res.data;
+};

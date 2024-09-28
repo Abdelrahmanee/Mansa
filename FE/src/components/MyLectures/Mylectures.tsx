@@ -26,7 +26,7 @@ export const Mylectures = () => {
       <div className='w-full flex justify-center items-center mb-5'>
         <div className='relative w-fit mx-auto md:mx-0'>
           <h1
-            className='relative font-Acme font-bold font-QuickStand text-4xl  mb-5 pb-0  text-shadow text-black'
+            className='relative font-Acme font-bold font-QuickStand text-3xl md:text-4xl  mb-5 pb-0  text-shadow text-black'
           >My Lectures
           </h1>
           <div className='w-3/4 h-1/4 bg-secondary-200 absolute top-[35%]

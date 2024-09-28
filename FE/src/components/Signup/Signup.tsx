@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button, Steps } from "antd";
 import { useState } from "react";
+import { Helmet } from 'react-helmet-async';
 
 export const Signup = () => {
 
@@ -127,6 +128,11 @@ export const Signup = () => {
 
   return (
     <>
+    <Helmet>
+        <meta charSet="utf-8" />
+        <title>E-learning : signup</title>
+        <link rel="canonical" href="http://mysite.com/example" />
+      </Helmet>
       <div className="font-[sans-serif] bg-white flex items-center md:h-screen p-4">
         <div className="w-full max-w-5xl mx-auto">
           <div className="grid md:grid-cols-[1fr_2fr] gap-16 bg-gray-50 shadow w-full sm:p-8 p-6 rounded-xl relative md:h-[646px]">

@@ -12,7 +12,7 @@ import { useAppDispatch } from "../../Hooks/StoreHooks";
 import { setUser } from "../../Store/AuthSlice";
 import { ErrorResponse, LoginResponse } from "../../utils/types";
 import { useState } from "react";
-
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -24,13 +24,10 @@ export const Login = () => {
 
   const validationSchema = z.object({
     identifier: z.string().refine((value) => {
-      // Regular expression for validating phone numbers (example: must be 10 digits)
       const isPhoneNumber = /^\d{11}$/.test(value); 
       
-      // Check if the value is a valid email
       const isEmail = z.string().email().safeParse(value).success;
   
-      // Pass validation if it's either a valid phone number or a valid email
       return isPhoneNumber || isEmail;
     }, {
       message: "Please enter a valid email or phone number"
@@ -84,6 +81,11 @@ export const Login = () => {
 
   return (
     <div className="font-[sans-serif]">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>E-learning : login</title>
+        <link rel="canonical" href="http://mysite.com/example" />
+      </Helmet>
       <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
         <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full">
           <div className="border border-gray-300 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
@@ -154,7 +156,7 @@ export const Login = () => {
             </form>
           </div>
           <div className="lg:h-[400px] md:h-[300px] max-md:mt-8">
-            <img src="https://readymadeui.com/login-image.webp" className="w-full h-full max-md:w-4/5 mx-auto block object-cover" alt="Dining Experience" />
+            <img src="https://readymadeui.com/login-image.webp" loading="lazy" className="w-full h-full max-md:w-4/5 mx-auto block object-cover" alt="Dining Experience" />
           </div>
         </div>
       </div>
