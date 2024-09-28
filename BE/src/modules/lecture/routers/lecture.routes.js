@@ -1,7 +1,7 @@
 import { authenticate, authorize } from "../../auth/middelwares/auth.middelware.js";
 import { Router } from "express";
 import { validate } from "../../../middelwares/validation.middelware.js";
-import { uploadMultiple, uploadSingle } from "../../../middelwares/upload.middelware.js";
+import { uploadMultiple } from "../../../middelwares/upload.middelware.js";
 import { addLectureSchema, checkingAccess, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
 import { addLecture, checkStudentAccess, deleteLecture, generateLectureCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
 import { isLectureExists } from "../middlewares/lecture.middleware.js";
@@ -19,7 +19,6 @@ router.get('/', authenticate, authorize('teacher', 'student'), getAllLectures)
 router.post('/add_lecture',
     authenticate,
     authorize(ROLES.TEACHER , ROLES.ADMIN),
-    // uploadSingle('logo'),
     uploadMultiple([{ name: 'logo', maxCount: 1 }, { name: 'videos', maxCount: 10 }, { name: 'pdfs', maxCount: 10 }]),
     validate(addLectureSchema),
     addLecture

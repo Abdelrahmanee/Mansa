@@ -14,21 +14,15 @@ export const authorize = (...roles) => {
 export const authenticate = catchAsyncError(async (req, res, next) => {
 
     const token = req.header('token')    
-
-    
     if (!token) throw new AppError("Unathenticated", 401)
-
-
-
     let userPayload = null;
     try {
-        // Use the synchronous version of jwt.verify to avoid issues with async behavior
-        userPayload = jwt.verify(token, process.env.SECRET_KEY);
-    } catch (error) {t
-        // If there's an error in token verification, handle i
+        jwt.verify(token, process.env.SECRET_KEY, async (err, payload) => {
+            userPayload = payload
+        });
+    } catch (error) {
         return next(new AppError(error.message, 498));
     }
-
 
     const user = await userModel.findById(userPayload._id)
     if (!user) return next(new AppError("user not found", 404))
