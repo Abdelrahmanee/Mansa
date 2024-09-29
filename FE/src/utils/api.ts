@@ -9,7 +9,7 @@ import {
 } from "./types";
 import api from "./apiRequestWithToken";
 
-const baseUrl: string = "http://localhost:3000/api/v1";
+const baseUrl: string = "https://mansa2-7vcs6i13.b4a.run/api/v1";
 
 
 // create new user
