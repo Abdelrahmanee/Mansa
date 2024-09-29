@@ -1,9 +1,11 @@
-import Stripe from "stripe";
-import dotenv from 'dotenv'
-dotenv.config()
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
+dotenv.config();
+
 export class WebhookController {
   constructor(stripePaymentService) {
     this.stripePaymentService = stripePaymentService;
+    this.stripe = new Stripe(process.env.STRIPE_API_KEY); 
   }
 
   handleWebhook(request, response) {
@@ -11,14 +13,15 @@ export class WebhookController {
     let event;
 
     try {
-      event = Stripe.webhooks.constructEvent(
+     
+      event = this.stripe.webhooks.constructEvent(
         request.body,
         sig,
         process.env.WEBHOOK_SECRET
       );
     } catch (err) {
-      response.status(400).send(`Webhook Error: ${err.message}`);
-      return;
+      console.error(`Webhook signature verification failed: ${err.message}`);
+      return response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
     // Handle the event
@@ -34,4 +37,3 @@ export class WebhookController {
     response.json({ received: true });
   }
 }
-
