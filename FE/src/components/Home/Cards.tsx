@@ -31,7 +31,7 @@ const Cards: React.FC = () => {
       <div className='w-full flex justify-center items-center mb-5'>
         <div className='relative w-fit mx-auto md:mx-0'>
           <h1
-            className='relative font-Acme font-bold font-QuickStand text-4xl  mb-5 pb-0  text-shadow text-black'
+            className='relative font-Acme font-bold font-QuickStand text-2xl md:text-4xl  mb-5 pb-0  text-shadow text-black'
           >Features Courses
           </h1>
           <div className='w-3/4 h-1/4 bg-secondary-200 absolute top-[35%]
@@ -43,7 +43,7 @@ const Cards: React.FC = () => {
           <Col lg={8} sm={12} xs={24} key={lecture._id}>
             {index === 0 || index === 2 ? (
               <Badge.Ribbon text="Best Seller">
-                <Card bordered={true} className="hover:shadow transition-all duration-300" cover={<img alt="example" src={lecture.logo} />}>
+                <Card bordered={true} className="hover:shadow transition-all duration-300" cover={<img alt="example" loading="lazy" src={lecture.logo} />}>
                   <Meta title={lecture.title} description={lecture.description} />
                   <div className="flex justify-between items-center mt-3 font-Roboto">
                     <p>{lecture.duration}hrs</p>

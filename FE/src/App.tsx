@@ -23,6 +23,11 @@ import { Profile } from './components/Profile/Profile'
 import { ForgetPassword } from './components/ForgetPassword/ForgetPassword'
 import { ResetPassword } from './components/ForgetPassword/ResetPassword'
 import { Mylectures } from './components/MyLectures/Mylectures'
+import Dashboard from './components/Dashbaord/Dashboard'
+import Statistics from './components/Dashbaord/Statistics'
+import SudentsTable from './components/Dashbaord/StudentsTable'
+import LecturesTable from './components/Dashbaord/LectureTable'
+import { HelmetProvider } from 'react-helmet-async'
 
 
 
@@ -54,6 +59,15 @@ function App() {
             { path: "pdfs", element: <LecturePDFs /> },
           ]
         },
+        {
+          path: 'Dashboard',
+          element: <Dashboard />,
+          children: [
+            { index: true, element: <Statistics /> },
+            { path: "students", element: <SudentsTable /> },
+            { path: "lecturers", element: <LecturesTable /> },
+          ]
+        },
         { path: "lecture/:lectureId/access-code", element: <AccessCode /> },
         { path: "*", element: <Error10 /> }
       ]
@@ -64,8 +78,10 @@ function App() {
     <>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ToastContainer autoClose={2000} />
+          <HelmetProvider>
+            <RouterProvider router={router} />
+            <ToastContainer autoClose={2000} />
+          </HelmetProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </Provider>

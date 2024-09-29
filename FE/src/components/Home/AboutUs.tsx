@@ -5,7 +5,7 @@ export const AboutUs = () => {
     <section className='w-full md:w-[80%] mx-auto my-10'>
       <div className='flex flex-col md:flex-row justify-center items-center gap-3'>
         <div className='w-full md:w-1/2'>
-          <img src={about} alt="" />
+          <img  loading="lazy" src={about} className='w-full' alt="" />
         </div>
         <div className='w-full text-center md:text-left md:w-1/2'>
         <div>

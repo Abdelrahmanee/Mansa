@@ -1,30 +1,24 @@
-import React, { useState } from 'react';
+import { Button, Layout, Menu, theme } from "antd"
+
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  FilePdfOutlined,
-  UserOutlined,
   VideoCameraOutlined,
+  BarChartOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
+const Dashboard = () => {
 
-const { Header, Sider, Content } = Layout;
-
-const Lectures: React.FC = () => {
-
-
-  const { lectureId } = useParams()
   const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(true);
+  const { Header, Sider, Content } = Layout;
+  const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
-
-
 
 
 
@@ -32,10 +26,16 @@ const Lectures: React.FC = () => {
     <Layout className='min-h-screen'>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Lecture</title>
+        <title>Dashboard</title>
         <link rel="canonical" href="http://mysite.com/example" />
       </Helmet>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={(broken) => {
+          setCollapsed(broken)
+        }}
+        onCollapse={(collapsed, type) => {
+        }} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="light"
@@ -45,27 +45,21 @@ const Lectures: React.FC = () => {
           items={[
             {
               key: '1',
-              icon: <UserOutlined />,
-              label: 'Lecture Details',
-              onClick: () => {
-                navigate(`/lecture/${lectureId}`)
-              }
+              icon: <BarChartOutlined />,
+              label: 'Statistics',
+              onClick: () => navigate('/dashboard'),
             },
             {
               key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'Videos',
-              onClick: () => {
-                navigate(`/lecture/${lectureId}/videos`)
-              }
+              icon: <UserOutlined />,
+              label: 'Students',
+              onClick: () => navigate('/dashboard/students'),
             },
             {
               key: '3',
-              icon: <FilePdfOutlined />,
-              label: 'Pdfs',
-              onClick: () => {
-                navigate(`/lecture/${lectureId}/pdfs`)
-              }
+              icon: <VideoCameraOutlined />,
+              label: 'Lecturers',
+              onClick: () => navigate('/dashboard/lecturers'),
             },
           ]}
         />
@@ -96,7 +90,7 @@ const Lectures: React.FC = () => {
         </Content>
       </Layout>
     </Layout>
-  );
-};
+  )
+}
 
-export default Lectures;
+export default Dashboard

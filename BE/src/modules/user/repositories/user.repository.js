@@ -8,8 +8,12 @@ class UserRepository {
     }
 
     async findByEmailOrMobile(identifier) {
-        console.log(userId);
-        return await userModel.findOne({ $or: [{ email: identifier }, { mobileNumber: identifier }] });
+        return await userModel.findOne({
+            $or: [
+                { email: identifier.toLowerCase() },
+                { mobileNumber: identifier.toLowerCase() }
+            ]
+        }).select('+otp +resetPasswordExpires');
     }
 
     async findOne(query) {
@@ -49,6 +53,11 @@ class UserRepository {
 
     async findAccounts(query, fields) {
         return await userModel.find(query, fields);
+    }
+
+
+    async getAllStudents(query) {
+        return await userModel.find(query).select('-password');
     }
 
 

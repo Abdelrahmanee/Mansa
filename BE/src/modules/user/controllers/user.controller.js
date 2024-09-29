@@ -90,6 +90,13 @@ export const anotherUserInfo = catchAsyncError(async (req, res, next) => {
 });
 
 
+// get all students
+export const getAllStudents = catchAsyncError(async (req, res, next) => {
+    const students = await userService.getAllStudents();
+    if (!students) return next(new AppError('No students found', 404));
+    const resData = await Promise.all(students.map(student => userService.formatUserResponse(student)));
+    res.status(200).json({ status: "success", message: 'Get all students successfully', data: resData });
+});
 
 
 

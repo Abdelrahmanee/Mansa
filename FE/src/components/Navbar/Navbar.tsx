@@ -85,7 +85,7 @@ function Navbar() {
                   <span className="badge">New</span>
                 </Link>
               </li>
-              <li><Link to='/adminPanel' className="justify-between">
+              <li><Link to='/dashboard' className="justify-between">
                 <span className='flex gap-1'>
                   <SettingOutlined />
                   <span>Admin</span>

@@ -11,9 +11,9 @@ export const MainFeature = () => {
         {/* <div className='w-fit mx-auto'>
           <Chip color='blue' value='Features' className='!opacity-80 mb-2' />
         </div> */}
-        <div className='relative w-fit mx-auto'>~
+        <div className='relative w-fit mx-auto'>
           <h1
-            className='relative font-Acme font-bold   text-5xl text-center  pb-0  text-shadow text-gray-800'
+            className='relative font-Acme font-bold   text-3xl md:text-4xl text-center  pb-0  text-shadow text-gray-800'
           >Main Feature
           </h1>
           <div className='w-3/4 h-1/3 bg-main-200 absolute top-[65%]
@@ -35,7 +35,7 @@ export const MainFeature = () => {
               <div className=" w-[100px] relative ">
                 <div className="w-[70px] h-[70px] p-3 border border-spacing-1 border-main-100  rounded-2xl rotate-[45deg]">
                 </div>
-                <img src={feature1} className="w-[85px] top-[5%] left-0  absolute" alt="" />
+                <img loading="lazy" src={feature1} className="w-[85px] top-[5%] left-0  absolute" alt="" />
               </div>
 
               <div className="w-1/2">
@@ -49,7 +49,7 @@ export const MainFeature = () => {
               <div className=" w-[100px] relative ">
                 <div className="w-[70px] h-[70px] p-3 border border-spacing-1 border-main-100  rounded-2xl rotate-[45deg]">
                 </div>
-                <img src={feature2} className="w-[80px] top-[5%] left-0  absolute" alt="" />
+                <img  loading="lazy" src={feature2} className="w-[80px] top-[5%] left-0  absolute" alt="" />
               </div>
 
               <div className="w-1/2">
@@ -68,7 +68,7 @@ export const MainFeature = () => {
               <div className=" w-[100px] relative ">
                 <div className="w-[70px] h-[70px] p-3 border border-spacing-1 border-main-100  rounded-2xl rotate-[45deg]">
                 </div>
-                <img src={feature3} className="w-[65px] top-[5%] left-[2%]  absolute" alt="" />
+                <img  loading="lazy" src={feature3} className="w-[65px] top-[5%] left-[2%]  absolute" alt="" />
               </div>
 
               <div className="w-1/2">
@@ -82,7 +82,7 @@ export const MainFeature = () => {
               <div className=" w-[100px] relative ">
                 <div className="w-[70px] h-[70px] p-3 border border-spacing-1 border-main-100  rounded-2xl rotate-[45deg]">
                 </div>
-                <img src={feature4} className="w-[85px] top-[5%] left-[-5%]  absolute" alt="" />
+                <img  loading="lazy" src={feature4} className="w-[85px] top-[5%] left-[-5%]  absolute" alt="" />
               </div>
 
               <div className="w-1/2">

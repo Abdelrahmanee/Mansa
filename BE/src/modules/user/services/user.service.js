@@ -153,6 +153,8 @@ class UserService {
 
         return { status: "success", message: "OTP sent" };
     }
+
+    
     async getMyLectures(studentId) {
         const user = await userRepository.findByIdWithLectures(studentId);
         if (!user) {
@@ -287,6 +289,10 @@ class UserService {
         await userRepository.save(user);
 
         return user;
+    }
+
+    async getAllStudents() {
+        return await userRepository.getAllStudents({role: 'student'});
     }
     
 }

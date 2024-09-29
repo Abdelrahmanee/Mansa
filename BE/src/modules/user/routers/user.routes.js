@@ -1,5 +1,5 @@
 import { authenticate, authorize, checkAccountVerification, checkUniqueIdentifier, isEmailExist, isUserExist } from "../../auth/middelwares/auth.middelware.js";
-import { anotherUserInfo, deleteAccount, sendOTP, getAllAccountsAssociated, resetPassword, updateAccount, updateAccountEmail, updatePassword, userInfo, kickUserOut, softDeleteUser, updateProfilePicture, userLoggedOut , getMyLectures } from "../controllers/user.controller.js";
+import { anotherUserInfo, deleteAccount, sendOTP, getAllAccountsAssociated, resetPassword, updateAccount, updateAccountEmail, updatePassword, userInfo, kickUserOut, softDeleteUser, updateProfilePicture, userLoggedOut , getMyLectures, getAllStudents } from "../controllers/user.controller.js";
 
 import { Router } from "express";
 import { anotherUserInfoSchema, sendOTPSchema, recoveryEmailSchema, resetPasswordSchema, updateAccountEmailSchema, updateAccountSchema, updatePasswordSchema, kickUserOutSchema, updateProfilePictureSchema } from "../validation/user.validation.js";
@@ -12,6 +12,8 @@ import { blockUser, getBlockedUsers, removeFromBlockList } from "../controllers/
 
 
 const router = Router()
+
+router.get('/get-all-students',authenticate,authorize(ROLES.TEACHER),getAllStudents)
 
 // user cruds
 router.put('/update_account',
@@ -57,7 +59,6 @@ router.get('/getAllAccountsAssociated',
     validate(recoveryEmailSchema), authenticate, authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN), getAllAccountsAssociated)
 
 
-// معملتش الروتس بتاعتهم مش عارف محتاجهم ولا لا
 router.delete('/soft_delete', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), softDeleteUser)
 router.delete('/logout', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), userLoggedOut)
 

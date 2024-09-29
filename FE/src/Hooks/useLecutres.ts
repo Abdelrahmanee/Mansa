@@ -10,6 +10,8 @@ const useLectures = () => {
       const res = await getLectures();
       return res;
     },
+    // staleTime: 600,
+    refetchInterval: 10000,
   });
 };
 
