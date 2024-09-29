@@ -3,7 +3,6 @@ import { userModel } from "../../user/models/user.model.js";
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
 
 
-
 export const authorize = (...roles) => {
     return catchAsyncError(async (req, res, next) => {
         if (roles.includes(req.user.role)) return next()
@@ -17,10 +16,12 @@ export const authenticate = catchAsyncError(async (req, res, next) => {
     if (!token) throw new AppError("Unathenticated", 401)
     let userPayload = null;
     try {
-        jwt.verify(token, process.env.SECRET_KEY, async (err, payload) => {
+
+       jwt.verify(token, process.env.SECRET_KEY, async (err, payload) => {
             userPayload = payload
         });
     } catch (error) {
+
         return next(new AppError(error.message, 498));
     }
 
@@ -34,6 +35,7 @@ export const authenticate = catchAsyncError(async (req, res, next) => {
         const time = parseInt(user?.passwordChangedAt.getTime() / 1000)
         if (time > userPayload.iat) return next(new AppError("Invalid token ... login again", 401))
     }
+    console.log(userPayload._id);
     req.user = user
     next()
 })

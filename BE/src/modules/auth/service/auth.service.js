@@ -68,8 +68,8 @@ class AuthService {
         // Generate the JWT token
         const token = jwt.sign(
             { email, sex, userName, role, status, age, mobileNumber, _id },
-            process.env.SECRET_KEY,
-            { expiresIn: '1d' }
+            process.env.SECRET_KEY
+            // ,{ expiresIn: '1d' }
         );
         return token;
     }
