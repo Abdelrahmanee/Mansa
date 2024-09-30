@@ -149,9 +149,13 @@ export const generateLectureCode = catchAsyncError(async (req, res, next) => {
     const { lectureId } = req.body
     const code = generateUniqueCode();
 
-    if (!code) throw new AppError("Code is required", 400)
+    const lecture = await lectureService.getLecture(lectureId)
 
-    const generatedCode = await lectureService.generateLectureCode({ lectureId, code, isUsed: false }, session, session)
+    if (!lecture) throw new AppError("Lecture not found", 404)
+
+    if (!code) throw new AppError("Faild to generate Code", 400)
+
+    const generatedCode = await lectureService.generateLectureCode({ lectureId, code, isUsed: false, price: lecture.price }, session, session)
 
     res.status(200).json({
       status: "success",
@@ -165,6 +169,18 @@ export const generateLectureCode = catchAsyncError(async (req, res, next) => {
     return next(new AppError(error.message, 500))
   }
 
+})
+
+export const deleteAccessCode = catchAsyncError(async(req, res, next) => {
+  const {accessCodeId} = req.params
+
+  const accessCode = await lectureService.deleteAccessCode(accessCodeId)
+
+  res.status(200).json({
+    status: "success",
+    message: "Access Code deleted successfully",
+    data: accessCode
+  })
 })
 
 
@@ -205,8 +221,6 @@ export const grantStudentAccess = catchAsyncError(async (req, res, next) => {
   try {
     const studentId = req.user._id;
     const { lectureId, code } = req.body;
-
-
 
     // Check if the student has access (this check assumes no permanent access)
     const studentLecture = await lectureService.hasAccess({ studentId, lectureId });
@@ -269,69 +283,6 @@ export const grantStudentAccess = catchAsyncError(async (req, res, next) => {
 
 
 
-// export const accessLecture = catchAsyncError(async (req, res, next) => {
-//   try {
-//     const studentId = req.user._id
-//     const { lectureId, code } = req.body;
-
-//     const studentLecture = await lectureService.hasAccess({ studentId, lectureId })
-
-//     if (studentLecture) {
-//       // If the student has permanent access, allow access
-//       if (studentLecture.hasPermanentAccess) {
-//         return res.status(200).json({ status: "success", message: "Already have Access ." ,hasAccess: true});
-//       }
-//     }
-
-
-//     // If the student doesn't have permanent access, then require the code
-//     if (!code) {
-//       // If no code is provided, return an error since they don't have access
-//       return res.status(400).json({ status: "fail", message: "Access code is required." ,hasAccess: false});
-//     }
-
-//     // If the code is generated
-//     const codeIsGenerated = await lectureService.checkCodeIsGenerated({ lectureId, code })
-
-//     if (!codeIsGenerated) {
-//       return res.status(403).json({ status: "fail", message: "Invalid code", hasAccess: false });
-//     }
-//     // If the studentLecture does not exist or permanent access is not granted, verify the code
-//     const codeIsNotAccessed = await lectureService.checkCodeIsAccessed({ lectureId, code, isUsed: false })
-
-//     if (!codeIsNotAccessed) {
-//       return res.status(403).json({ status: "fail", message: "Code is already Used" ,hasAccess: false});
-//     }
-
-//     // Mark the code as used
-//     codeIsNotAccessed.isUsed = true;
-//     await codeIsNotAccessed.save();
-
-//     // Record the student's access and grant permanent access
-//     if (!studentLecture) {
-//       const data = {
-//         studentId,
-//         lectureId,
-//         accessCodeId: codeIsNotAccessed._id,
-//         hasPermanentAccess: true,
-//       }
-
-//       await lectureService.linkStudentWithLecture(data);
-//     } else {
-//       await lectureService.updateStudentLecture({ studentLecture, accessCodeID: codeIsNotAccessed._id });
-//     }
-
-//     return res.status(200).json({status: 'success', message: "Access Approved." ,hasAccess: true});
-
-
-
-//   } catch (error) {
-//     return next(new AppError(error.message, 500))
-//   }
-
-// })
-
-
 export const getAllLectures = catchAsyncError(async (req, res, next) => {
   try {
     const lectures = await lectureService.getAllLectures()
@@ -343,4 +294,14 @@ export const getAllLectures = catchAsyncError(async (req, res, next) => {
   catch (error) {
     return next(new AppError(error.message, 500))
   }
+})
+
+
+export const getAllAccessCode = catchAsyncError(async (req, res, next) => {
+    const accessCodes = await lectureService.getAllAccessCode()
+    res.status(200).json({
+      status: "success",
+      message: "Get All Access Code Successfully",
+      data: accessCodes
+    });
 })

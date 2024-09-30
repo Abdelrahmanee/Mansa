@@ -4,6 +4,9 @@ import { Button } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../Hooks/StoreHooks';
 import { clearUser } from '../../Store/AuthSlice';
 import { UserOutlined, PoweroffOutlined, SettingOutlined } from '@ant-design/icons'
+import { handlelogout } from '../../utils/api';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 function Navbar() {
 
@@ -12,9 +15,20 @@ function Navbar() {
   const dispath = useAppDispatch()
   const nav = useNavigate()
 
-  const handleLogout = () => {
-    dispath(clearUser())
-    nav('/login')
+  const { mutateAsync } = useMutation({
+    mutationFn: async () => await handlelogout(),
+    onSuccess: () => {
+      dispath(clearUser())
+      nav('/login')
+    },
+    onError: (error) => {
+      console.log(error)
+      toast.error(error.message)
+    }
+  })
+
+  const handleLogout = async () => {
+    await mutateAsync()
   }
 
   return (

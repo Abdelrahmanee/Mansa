@@ -12,18 +12,21 @@ export const authorize = (...roles) => {
 
 export const authenticate = catchAsyncError(async (req, res, next) => {
 
-    const token = req.header('token')    
+    const token = req.header('token')
+
     if (!token) throw new AppError("Unathenticated", 401)
-    let userPayload = null;
+    let userPayload;
     try {
-
-       jwt.verify(token, process.env.SECRET_KEY, async (err, payload) => {
-            userPayload = payload
-        });
+        // Synchronously verify the token
+        userPayload = jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
-
-        return next(new AppError(error.message, 498));
+        return next(new AppError("Invalid or expired token", 498));
     }
+
+    if (!userPayload || !userPayload._id) {
+        return next(new AppError("Invalid token", 401));
+    }
+
 
     const user = await userModel.findById(userPayload._id)
     if (!user) return next(new AppError("user not found", 404))

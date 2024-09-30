@@ -60,7 +60,7 @@ router.get('/getAllAccountsAssociated',
 
 
 router.delete('/soft_delete', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), softDeleteUser)
-router.delete('/logout', authenticate, authorize(ROLES.STUDENT, ROLES.ADMIN), userLoggedOut)
+router.post('/logout', authenticate, authorize(ROLES.STUDENT,ROLES.TEACHER ,ROLES.ADMIN), userLoggedOut)
 
 
 

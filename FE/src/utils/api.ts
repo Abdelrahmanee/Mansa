@@ -1,8 +1,11 @@
 import axios from "axios";
 import {
   AllLectureResponse,
+  Code,
+  Lecture,
   LectureByID,
   LoginResponse,
+  OnlinePaymentResponse,
   StudentLecturesResponse,
   updateUserResponse,
   User,
@@ -153,5 +156,63 @@ export const getAllStudents = async (): Promise<{
   message: string;
 }> => {
   const res = await api.get(`/users/get-all-students`);
+  return res.data;
+};
+
+export const onlinePayment = async (data: {
+  lectureId: string;
+}): Promise<OnlinePaymentResponse> => {
+  const res = await api.post(`/payment/online-payment`, data);
+  return res.data;
+};
+
+
+export const handlelogout = async (): Promise<{
+  status: string;
+  message: string;
+  data: User;
+}> => {
+  const res = await api.post(`/users/logout`);
+  return res.data;
+};
+
+export const getCodes = async (): Promise<{
+  status: string;
+  message: string;
+  data: Code[];
+}> => {
+  const res = await api.get(`/lectures/getAllAccessCode`);
+  return res.data;
+};
+
+
+export const generateAccessCode = async (lectureId: string): Promise<{
+  status: string;
+  message: string;
+  data: Code;
+}> => {
+  const res = await api.post(`/lectures/generate_Access_code`, {
+    lectureId,
+  });
+  return res.data;
+};
+
+
+export const deleteAccessCode = async (codeId: string): Promise<{
+  status: string;
+  message: string;
+  data: Code;
+}> => {
+  const res = await api.delete(`/lectures/delete_Access_code/${codeId}`);
+  return res.data;
+};
+
+
+export const createLecture = async (data: any): Promise<{
+  status: string;
+  message: string;
+  data: Lecture;
+}> => {
+  const res = await api.post(`/lectures/add_lecture`, data);
   return res.data;
 };

@@ -35,8 +35,8 @@ class StripePaymentService {
                     },
                 ],
                 mode: 'payment',
-                success_url: `https://mansasc-git-main-abdoooos-projects.vercel.app/lecture/${lecture_id}`,
-                cancel_url: 'https://mansasc-git-main-abdoooos-projects.vercel.app/',
+                success_url: `https://mansa-v1.vercel.app//lecture/${lecture_id}`,
+                cancel_url: 'https://mansa-v1.vercel.app/',
                 client_reference_id: user._id.toString(), // Ensure user._id is a string
                 customer_email: user.email,
                 metadata: {
