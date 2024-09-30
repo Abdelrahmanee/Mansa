@@ -2,8 +2,8 @@ import { authenticate, authorize } from "../../auth/middelwares/auth.middelware.
 import { Router } from "express";
 import { validate } from "../../../middelwares/validation.middelware.js";
 import { uploadMultiple } from "../../../middelwares/upload.middelware.js";
-import { addLectureSchema, checkingAccess, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
-import { addLecture, checkStudentAccess, deleteLecture, generateLectureCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
+import { addLectureSchema, checkingAccess, deleteAccessCodeSchema, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
+import { addLecture, checkStudentAccess, deleteAccessCode, deleteLecture, generateLectureCode, getAllAccessCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
 import { isLectureExists } from "../middlewares/lecture.middleware.js";
 import { ROLES } from "../../../utilies/enums.js";
 
@@ -13,7 +13,8 @@ const router = Router()
 
 
 
-
+router.get('/getAllAccessCode', authenticate, authorize(ROLES.TEACHER , ROLES.ADMIN), getAllAccessCode)
+router.get('/getLectureByID/:lectureId', authenticate, validate(getLectureByIdSchema), getLectureById)
 router.get('/', authenticate, authorize('teacher', 'student'), getAllLectures)
 
 router.post('/add_lecture',
@@ -54,7 +55,13 @@ router.post('/check_student_access',
     isLectureExists,
     checkStudentAccess
 )
-router.get('/getLectureByID/:lectureId', authenticate, validate(getLectureByIdSchema), getLectureById)
+
+router.delete('/delete_access_code/:accessCodeId',
+    authenticate,
+    authorize(ROLES.TEACHER , ROLES.ADMIN),
+    validate(deleteAccessCodeSchema),
+    deleteAccessCode
+)
 
 
 

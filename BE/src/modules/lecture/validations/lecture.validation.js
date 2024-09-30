@@ -113,3 +113,17 @@ export const getLectureByIdSchema = Joi.object({
     },
     query: {}
 })
+
+
+export const deleteAccessCodeSchema = Joi.object({
+    body: {},
+    params: {
+        accessCodeId: Joi.string()
+            .regex(/^[0-9a-fA-F]{24}$/)
+            .required()
+            .messages({
+                'string.pattern.base': `Access Code ID must be a valid ObjectId`,
+            })
+    },
+    query: {}
+})

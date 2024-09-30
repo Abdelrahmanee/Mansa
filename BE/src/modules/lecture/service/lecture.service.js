@@ -129,5 +129,22 @@ class LectureService {
     async getAllLectures() {
         return lectureRepository.getAllLectures()
     }
+
+    async getAllAccessCode() {
+        return await LectureAccessCodeModel.find({})
+    }
+
+    async deleteAccessCode(accessCodeId) {
+
+        if(!accessCodeId) throw new AppError("Access Code ID is required", 400)
+
+        const accessCode = await lectureRepository.getAccessCode(accessCodeId)
+
+        if (!accessCode) throw new AppError("Access Code not found", 404)
+        
+        if(accessCode.isUsed) throw new AppError("Access Code already used and can't be deleted", 400)
+
+        return await lectureRepository.deleteAccessCode(accessCodeId)
+    }
 }
 export default new LectureService();

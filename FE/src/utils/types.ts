@@ -91,3 +91,19 @@ export interface StudentLecturesResponse {
   lectureCount: number
   lectures: Lecture[];
 }
+
+export interface OnlinePaymentResponse {
+  url: string;
+}
+
+export interface Code {
+  _id: string;
+  price: number;
+  lectureId: string;
+  code: string;
+  isUsed: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+

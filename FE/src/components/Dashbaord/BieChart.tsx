@@ -1,36 +1,45 @@
-import React from 'react';
-import { Pie } from '@ant-design/plots';
-import { PieConfig } from '@ant-design/plots/es/components/pie';
+import React, { PureComponent } from 'react';
+import { PieChart as RechartsPieChart, Pie, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 
-const BieChart: React.FC = () => {
-  const config: PieConfig = {
-    data: [
-      { type: 'male', value: 25 },
-      { type: 'female', value: 10 },
-      
-    ],
-    angleField: 'value',
-    colorField: 'type',
-    label: {
-      type: 'inner', 
-      offset: '-30%',
-      content: ({ percent }: { percent: number }) => `${(percent * 100).toFixed(0)}%`, 
-      style: {
-        fontWeight: 'bold',
-      },
-    },
-    legend: {
-      position: 'left',
-      itemHeight: 20,
-      itemWidth: 100,
-    },
-    interactions: [
-      { type: 'element-selected' },
-      { type: 'element-active' },
-    ],
-  };
+const data01 = [
+  { name: 'Group A', value: 400 },
+  { name: 'Group B', value: 300 },
+  { name: 'Group C', value: 300 },
+  { name: 'Group D', value: 200 },
+  { name: 'Group E', value: 278 },
+  { name: 'Group F', value: 189 },
+];
 
-  return <Pie {...config} />;
-};
+const data02 = [
+  { name: 'Group A', value: 2400 },
+  { name: 'Group B', value: 4567 },
+  { name: 'Group C', value: 1398 },
+  { name: 'Group D', value: 9800 },
+  { name: 'Group E', value: 3908 },
+  { name: 'Group F', value: 4800 },
+];
 
-export default BieChart;
+export default class PieChart extends PureComponent {
+  static demoUrl = 'https://codesandbox.io/s/two-simple-pie-chart-otx9h';
+
+  render() {
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <RechartsPieChart width={700} height={700}>
+          <Pie
+            dataKey="value"
+            isAnimationActive={false}
+            data={data01}
+            cx="50%"
+            cy="50%"
+            outerRadius={110}
+            fill="#8884d8"
+            label
+          />
+          {/* <Pie dataKey="value" data={data02} cx={500} cy={200} innerRadius={40} outerRadius={80} fill="#82ca9d" /> */}
+          <Tooltip />
+        </RechartsPieChart>
+      </ResponsiveContainer>
+    );
+  }
+}

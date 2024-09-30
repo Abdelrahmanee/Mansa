@@ -9,6 +9,10 @@ const Schema = new mongoose.Schema({
     type: String,
     unique: true
   },
+  price: {
+    type: Number,
+    default: 0
+  },
   isUsed: {
     type: Boolean,
     default: false

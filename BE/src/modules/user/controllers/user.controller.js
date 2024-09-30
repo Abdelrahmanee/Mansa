@@ -1,21 +1,10 @@
-import jwt from 'jsonwebtoken'
-import { v4 as uuid4 } from 'uuid';
-import cloudinary from 'cloudinary';
-import { extractPublicId } from 'cloudinary-build-url'
-import { userModel } from "../models/user.model.js";
-import mongoose, { startSession } from 'mongoose';
 import dotenv from 'dotenv'
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
-import { generateOTP, sendEmail } from '../../../utilies/email.js';
-import { StudentLectureModel } from '../../lecture/models/StudentLecture.model.js';
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from '../../../utilies/htmlTemplate.js';
-import { lectureModel } from '../../lecture/models/lecture.model.js';
 import { userService } from '../services/user.service.js';
 import { blockService } from '../services/block.service.js';
 dotenv.config()
 
 // get account.
-
 export const userInfo = catchAsyncError(async (req, res, next) => {
     const { userId } = req.params;
 
@@ -37,6 +26,8 @@ export const userInfo = catchAsyncError(async (req, res, next) => {
         data: user
     });
 });
+
+
 // Update account
 export const updateAccount = catchAsyncError(async (req, res, next) => {
     const { _id, firstName, lastName } = req.user;
@@ -97,9 +88,6 @@ export const getAllStudents = catchAsyncError(async (req, res, next) => {
     const resData = await Promise.all(students.map(student => userService.formatUserResponse(student)));
     res.status(200).json({ status: "success", message: 'Get all students successfully', data: resData });
 });
-
-
-
 
 
 //  Update password 
@@ -187,19 +175,13 @@ export const softDeleteUser = catchAsyncError(async (req, res, next) => {
 
 export const userLoggedOut = catchAsyncError(async (req, res, next) => {
     const { _id } = req.user;
-
-    try {
-        // Call the service method to log out the user
-        const user = await userService.logoutUser(_id);
-
-        res.status(200).json({
-            status: 'success',
-            message: 'User logged out successfully',
-            data: { user },
-        });
-    } catch (error) {
-        next(error);
-    }
+    const user = await userService.logoutUser(_id);
+    const formattedUser = await userService.formatUserResponse(user)
+    res.status(200).json({
+        status: 'success',
+        message: 'User logged out successfully',
+        data: formattedUser,
+    });
 });
 
 export const blockUser = catchAsyncError(async (req, res, next) => {

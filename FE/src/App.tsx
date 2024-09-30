@@ -26,8 +26,10 @@ import { Mylectures } from './components/MyLectures/Mylectures'
 import Dashboard from './components/Dashbaord/Dashboard'
 import Statistics from './components/Dashbaord/Statistics'
 import SudentsTable from './components/Dashbaord/StudentsTable'
-import LecturesTable from './components/Dashbaord/LectureTable'
+import LecturesTable from './components/Dashbaord/Lectures/LectureTable'
 import { HelmetProvider } from 'react-helmet-async'
+import CodesTable from './components/Dashbaord/Codes/CodesTables'
+import AddLecture from './components/Dashbaord/Lectures/AddLecture'
 
 
 
@@ -66,6 +68,8 @@ function App() {
             { index: true, element: <Statistics /> },
             { path: "students", element: <SudentsTable /> },
             { path: "lecturers", element: <LecturesTable /> },
+            { path: "lectures/add", element: <AddLecture /> },
+            { path: "codes", element: <CodesTable /> },
           ]
         },
         { path: "lecture/:lectureId/access-code", element: <AccessCode /> },
