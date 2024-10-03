@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { createLecture } from '../../../utils/api';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError, isAxiosError } from 'axios';
+import { ErrorResponse } from '../../../utils/types';
 
 const lectureSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -31,11 +33,23 @@ const AddLecture = () => {
     mutationFn: createLecture,
     onSuccess: (data) => {
       console.log(data);
-      messageApi.success('Code deleted successfully');
+      messageApi.success('Lecture added successfully');
       navigate('/dashboard/lectures');
     },
     onError: (error) => {
       console.log(error);
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError<ErrorResponse>
+        console.log(axiosError.response);
+        if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
+          messageApi.error(axiosError.response?.data.message);
+        } else {
+          messageApi.error('An unexpected error occurred');
+        }
+      } else {
+        messageApi.error('An unexpected error occurred');
+      }
+
     },
   })
 
@@ -72,7 +86,6 @@ const AddLecture = () => {
     if (data.pdf) formData.append('pdfs', data.pdf);
     if (data.video) formData.append('videos', data.video);
 
-    console.log(data);
     setLoading(true);
     try {
       await mutation.mutateAsync(formData);
@@ -99,7 +112,7 @@ const AddLecture = () => {
     <div className='w-full flex flex-col justify-center items-center'>
       {contextHolder}
       <h1 className='text-2xl font-bold py-5'>Add Lecture</h1>
-      <Form layout="vertical" onFinish={handleSubmit(onSubmit)} className='w-1/2'>
+      <Form layout="vertical" onFinish={handleSubmit(onSubmit)} className='w-full  xl:w-2/3'>
         <Form.Item label="Title" validateStatus={errors.title ? 'error' : ''} help={errors.title?.message as string}>
           <Input
             {...register('title')}

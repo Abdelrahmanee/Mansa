@@ -12,7 +12,7 @@ class PdfRepository {
     }
 
     // Find pdfs by lectureId (optional, for retrieving pdfs later)
-    async findPdfsByLecture(lectureId) {
+    async findByLectureId(lectureId) {
         return await Pdf.find({ lectureId });
     }
 
@@ -24,6 +24,10 @@ class PdfRepository {
     // Delete a pdf by publicId (optional, for pdf deletion)
     async deletePdfByPublicId(publicId) {
         return await Pdf.deleteOne({ publicId });
+    }
+
+    async deleteByLectureId(lectureId){
+        return await Pdf.findOneAndDelete({lectureId})
     }
 }
 

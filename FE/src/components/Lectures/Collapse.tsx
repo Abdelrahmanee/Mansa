@@ -31,7 +31,7 @@ const Collapses: React.FC = () => {
     console.log(key);
   };
 
-  return <Collapse className='w-full' items={items} defaultActiveKey={['1']} onChange={onChange} />;
+  return <Collapse className='w-full md:w-2/3' items={items} defaultActiveKey={['1']} onChange={onChange} />;
 };
 
 export default Collapses;

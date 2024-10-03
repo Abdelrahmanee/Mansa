@@ -8,6 +8,7 @@ import { useAppDispatch } from "../../Hooks/StoreHooks";
 import { setLecture } from "../../Store/LecuteSlice";
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from "antd";
+import { Helmet } from "react-helmet-async";
 
 export const LectureRoute = () => {
 
@@ -35,6 +36,10 @@ export const LectureRoute = () => {
     <>
       {
         isLoading ? <div className='w-full h-screen flex justify-center items-center'>
+          <Helmet>
+            <meta charSet="utf-8" />
+            <title>Lecture</title>
+          </Helmet>
           <Spin indicator={<LoadingOutlined spin />} size='large' />
         </div> : <ProtectedLectureRoute lectureId={lectureId}>
           <Lectures />

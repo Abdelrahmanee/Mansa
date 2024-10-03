@@ -1,5 +1,4 @@
 import { AppError, catchAsyncError } from "../../../utilies/error.js";
-import { lectureModel } from "../models/lecture.model.js";
 import { v2 as cloudinary } from 'cloudinary';
 import LectureService from "../service/lecture.service.js";
 import mongoose from "mongoose";
@@ -20,15 +19,17 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
   session.startTransaction();
 
   try {
+    const existTitle = await lectureService.getLectureByTitle(req.body.title)
+    if (existTitle) throw new AppError('Lecture title already exist ', 400)
+
+    const existDescription = await lectureService.getLectureWithDescription(req.body.description)
+    if (existDescription) throw new AppError('Lecture description already exist ', 400)
+
     if (!req.user) throw new AppError("you must be logged in", 498)
     // Create the lecture document without the logo first
     const lectureData = { ...req.body, teacherId: req.user._id };
     const lecture = await lectureService.createLecture(lectureData, session);
 
-    console.log(req.files.pdfs[0].cloudinaryResult);
-
-
-    // if (!req.file) throw new AppError('No file uploaded', 400)
     const { logoURL } = await LectureService.uploadLogo(req.files.logo[0], lecture._id)
 
     if (!logoURL) throw new AppError('Logo not found', 404)
@@ -56,8 +57,6 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
       );
       const pdfUploadResults = await Promise.all(pdfPromises);
 
-      console.log(pdfUploadResults);
-
 
       // Extract PDF URLs and update the lecture
       const pdfURLs = pdfUploadResults.map(result => result.PDFURL);
@@ -72,7 +71,7 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
     await session.commitTransaction();
     session.endSession();
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       message: 'Lecture is added successfully',
       data: lecture
@@ -91,7 +90,6 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
     if (req.files && req.files.videos) {
       await Promise.all(req.files.videos.map(async (file) => {
         try {
-          console.log(file.cloudinaryResult.public_id);
           await cloudinary.uploader.destroy(file.cloudinaryResult.public_id, { resource_type: 'video' });
         } catch (error) {
           return next(new AppError('Error deleting video from Cloudinary', 500));
@@ -104,29 +102,34 @@ export const addLecture = catchAsyncError(async (req, res, next) => {
       await Promise.all(req.files.pdfs.map(async (file) => {
         try {
           console.log(file.cloudinaryResult.public_id);
-          await cloudinary.uploader.destroy(file.cloudinaryResult.public_id, { resource_type: 'raw' });
+          await cloudinary.uploader.destroy(file.cloudinaryResult.public_id);
         } catch (error) {
-          return next(new AppError('Error deleting video from Cloudinary', 500));
+          console.error('Error deleting PDF from Cloudinary:', error);
+          // Don't use return here, as it won't work inside a Promise.all
         }
       }));
     }
-
     session.endSession();
-    res.status(500).json({
-      status: "fail",
-      message: error.message
-    });
+    return next(error);
   }
 
 });
 
+export const deleteLectureVideo = catchAsyncError(async (req, res) => {
+  const vidId = 'Mansa/Lectures/laokioop33dmbtitytpc'
+  const result = await cloudinary.uploader.destroy(vidId, { resource_type: 'video' });
+  console.log(result)
+  res.status(200).json({
+    status: "success",
+    message: "Video deleted successfully",
+    data: result
+  })
+})
+
 
 export const getLectureById = catchAsyncError(async (req, res, next) => {
-
   const { lectureId } = req.params;
-
   try {
-
     const lecture = await lectureService.getLecture(lectureId)
 
     if (!lecture) throw new AppError('lecture not found', 404)
@@ -171,11 +174,9 @@ export const generateLectureCode = catchAsyncError(async (req, res, next) => {
 
 })
 
-export const deleteAccessCode = catchAsyncError(async(req, res, next) => {
-  const {accessCodeId} = req.params
-
+export const deleteAccessCode = catchAsyncError(async (req, res, next) => {
+  const { accessCodeId } = req.params
   const accessCode = await lectureService.deleteAccessCode(accessCodeId)
-
   res.status(200).json({
     status: "success",
     message: "Access Code deleted successfully",
@@ -184,9 +185,14 @@ export const deleteAccessCode = catchAsyncError(async(req, res, next) => {
 })
 
 
-export const deleteLecture = catchAsyncError((req, res, next) => {
-
+export const deleteLecture = catchAsyncError(async (req, res) => {
   const { lectureId } = req.params
+  const lecture = await lectureService.deleteLecture(lectureId)
+  res.status(200).json({
+    status: "success",
+    message: "Lecture deleted successfully",
+    data: lecture
+  })
 })
 
 export const checkStudentAccess = catchAsyncError(async (req, res, next) => {
@@ -298,10 +304,10 @@ export const getAllLectures = catchAsyncError(async (req, res, next) => {
 
 
 export const getAllAccessCode = catchAsyncError(async (req, res, next) => {
-    const accessCodes = await lectureService.getAllAccessCode()
-    res.status(200).json({
-      status: "success",
-      message: "Get All Access Code Successfully",
-      data: accessCodes
-    });
+  const accessCodes = await lectureService.getAllAccessCode()
+  res.status(200).json({
+    status: "success",
+    message: "Get All Access Code Successfully",
+    data: accessCodes
+  });
 })

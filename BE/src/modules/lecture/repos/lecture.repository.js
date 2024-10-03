@@ -1,5 +1,6 @@
 import { lectureModel } from "../models/lecture.model.js";
 import { LectureAccessCodeModel } from "../models/LectureAccessCode.model .js";
+import logoRepository from "./logo.repository.js";
 
 
 
@@ -29,6 +30,19 @@ class LectureRepository {
         return await LectureAccessCodeModel.findById(accessCodeId)
     }
 
+
+    async deleteLecture(lectureId){
+        return await lectureModel.findByIdAndDelete(lectureId)
+    }
+
+
+    async getLectureByTitle(title){
+        return await lectureModel.findOne({title})
+    }
+
+    async getLectureWithDescription(description){
+        return await lectureModel.findOne({description})
+    }
 
 }
 

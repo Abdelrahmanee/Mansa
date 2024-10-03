@@ -84,6 +84,20 @@ class LectureService {
             throw new AppError('PDF upload failed', 500);
         }
     }
+
+    async getLectureByTitle(title) {
+        return await lectureRepository.getLectureByTitle(title)
+    }
+
+    async getLectureWithDescription(description) {
+        return await lectureRepository.getLectureWithDescription(description)
+    }
+
+    async getLecture(id) {
+        return await lectureRepository.getLectureInfo(id)
+    }
+
+
     async createLecture(data) {
         return await lectureModel.create(data)
     }
@@ -136,15 +150,61 @@ class LectureService {
 
     async deleteAccessCode(accessCodeId) {
 
-        if(!accessCodeId) throw new AppError("Access Code ID is required", 400)
+        if (!accessCodeId) throw new AppError("Access Code ID is required", 400)
 
         const accessCode = await lectureRepository.getAccessCode(accessCodeId)
 
         if (!accessCode) throw new AppError("Access Code not found", 404)
-        
-        if(accessCode.isUsed) throw new AppError("Access Code already used and can't be deleted", 400)
+
+        if (accessCode.isUsed) throw new AppError("Access Code already used and can't be deleted", 400)
 
         return await lectureRepository.deleteAccessCode(accessCodeId)
+    }
+
+
+    async deleteResource(lectureId, repository, resourceName) {
+        const resources = await repository.findByLectureId(lectureId);
+        if (resources && resources.length > 0) {
+            await Promise.all(resources.map(async (resource) => {
+                if (resource.publicId) {
+                    if (resourceName === 'Video') {
+                        const result = await cloudinary.v2.uploader.destroy(resource.publicId, { resource_type: 'video' });
+                    } else {
+                        const result = await cloudinary.v2.uploader.destroy(resource.publicId);
+                    }
+                }
+            }));
+            await repository.deleteByLectureId(lectureId);
+        }
+    }
+
+    async deleteLecture(lectureId) {
+        try {
+            const lecture = await lectureRepository.getLectureInfo(lectureId);
+            if (!lecture) {
+                throw new AppError("Lecture not found", 404);
+            }
+
+            // Delete associated resources
+            await this.deleteResource(lectureId, logoRepository, 'Logo');
+            await this.deleteResource(lectureId, videoRepository, 'Video');
+            await this.deleteResource(lectureId, pdfRepository, 'PDF');
+
+            // Delete access codes associated with the lecture
+            await LectureAccessCodeModel.deleteMany({ lectureId });
+
+            // Remove lecture reference from students
+            await StudentLectureModel.deleteMany({ lectureId });
+            await userModel.updateMany(
+                { 'lectures.lectureId': lectureId },
+                { $pull: { lectures: { lectureId } } }
+            );
+
+            // Finally, delete the lecture
+            return await lectureRepository.deleteLecture(lectureId);
+        } catch (error) {
+            throw new AppError(`Error deleting lecture: ${error.message}`, 500);
+        }
     }
 }
 export default new LectureService();

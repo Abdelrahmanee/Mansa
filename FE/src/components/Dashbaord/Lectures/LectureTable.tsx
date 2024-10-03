@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Input, Result, Space, Spin, Table, Tag } from 'antd';
+import { Button, Input, message, Popconfirm, Result, Space, Spin, Table, Tag } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd';
 import { LoadingOutlined, StarFilled, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import useLectures from '../../../Hooks/useLecutres';
+import { useMutation } from '@tanstack/react-query';
+import { deleteLecture } from '../../../utils/api';
 
 interface DataType {
   key: string;
@@ -16,11 +18,24 @@ interface DataType {
 const LecturesTable: React.FC = () => {
 
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [deleteLoading, setDeleteLoading] = useState<string | null>('');
 
+  const mutation = useMutation({
+    mutationFn: deleteLecture,
+    onSuccess: (data) => {
+      console.log(data);
+      message.success(data.message);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    onSettled: () => {
+      setDeleteLoading(null);
+    }
+  })
   const { data, isLoading, isError } = useLectures();
 
   const handleEdit = (key: string) => {
@@ -28,7 +43,8 @@ const LecturesTable: React.FC = () => {
   };
 
   const handleDelete = (key: string) => {
-    console.log(key);
+    setDeleteLoading(key);
+    mutation.mutate(key);
   };
 
   // Filter lectures by search input
@@ -82,7 +98,15 @@ const LecturesTable: React.FC = () => {
       render: (text, record) => (
         <Space direction="horizontal">
           <Button type="primary" onClick={() => handleEdit(record.key)}>Edit</Button>
-          <Button type="primary" onClick={() => handleDelete(record.key)}>Delete</Button>
+          <Popconfirm
+            title="Delete the Lecture"
+            description="Are you sure to delete this Lecture?"
+            onConfirm={() => handleDelete(record.key)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button loading={deleteLoading === record.key} danger>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },

@@ -3,7 +3,7 @@ import { Router } from "express";
 import { validate } from "../../../middelwares/validation.middelware.js";
 import { uploadMultiple } from "../../../middelwares/upload.middelware.js";
 import { addLectureSchema, checkingAccess, deleteAccessCodeSchema, deleteLectureSchema, generateAccessCode, getLectureByIdSchema, lectureAccessRequest } from "../validations/lecture.validation.js";
-import { addLecture, checkStudentAccess, deleteAccessCode, deleteLecture, generateLectureCode, getAllAccessCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
+import { addLecture, checkStudentAccess, deleteAccessCode, deleteLecture, deleteLectureVideo, generateLectureCode, getAllAccessCode, getAllLectures, getLectureById, grantStudentAccess } from "../controllers/lecture.controller.js";
 import { isLectureExists } from "../middlewares/lecture.middleware.js";
 import { ROLES } from "../../../utilies/enums.js";
 
@@ -63,6 +63,16 @@ router.delete('/delete_access_code/:accessCodeId',
     deleteAccessCode
 )
 
+router.delete('/delete_lecture/:lectureId',
+    authenticate,
+    authorize(ROLES.TEACHER , ROLES.ADMIN),
+    validate(deleteLectureSchema),
+    deleteLecture
+)
+
+router.delete('/delete_lecture_video',
+    deleteLectureVideo
+)
 
 
 export default router

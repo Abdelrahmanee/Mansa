@@ -12,7 +12,7 @@ class VideoRepository {
     }
 
     // Find videos by lectureId (optional, for retrieving videos later)
-    async findVideosByLecture(lectureId) {
+    async findByLectureId(lectureId) {
         return await Video.find({ lectureId });
     }
 
@@ -24,6 +24,10 @@ class VideoRepository {
     // Delete a video by publicId (optional, for video deletion)
     async deleteVideoByPublicId(publicId) {
         return await Video.deleteOne({ publicId });
+    }
+
+    async deleteByLectureId(lectureId){
+        return await Video.findOneAndDelete({lectureId})
     }
 }
 

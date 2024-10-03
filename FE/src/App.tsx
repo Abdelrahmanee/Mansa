@@ -67,7 +67,7 @@ function App() {
           children: [
             { index: true, element: <Statistics /> },
             { path: "students", element: <SudentsTable /> },
-            { path: "lecturers", element: <LecturesTable /> },
+            { path: "lectures", element: <LecturesTable /> },
             { path: "lectures/add", element: <AddLecture /> },
             { path: "codes", element: <CodesTable /> },
           ]
