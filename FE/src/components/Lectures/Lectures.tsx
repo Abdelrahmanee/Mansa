@@ -33,9 +33,8 @@ const Lectures: React.FC = () => {
       <Helmet>
         <meta charSet="utf-8" />
         <title>Lecture</title>
-        <link rel="canonical" href="http://mysite.com/example" />
       </Helmet>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsed} collapsedWidth={0}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="light"

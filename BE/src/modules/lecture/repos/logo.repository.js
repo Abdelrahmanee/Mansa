@@ -9,14 +9,19 @@ class LogoRepository {
         await logo.save();
         return logo
     }
-    async findLogoByLecture(lectureId){
-        return await Logo.findOne({lectureId})
+    async findByLectureId(lectureId){
+        return await Logo.find({lectureId})
     }
     async findLogoById(logoId){
         return await Logo.findById(logoId)
     }
     async deleteLogoByPublicId(publicId){
-        return await Logo.deleteOne({publicId})
+        return await Logo.findOneAndDelete({publicId})
+    }
+
+
+    async deleteByLectureId(lectureId){
+        return await Logo.findOneAndDelete({lectureId})
     }
 }
 export default new LogoRepository();

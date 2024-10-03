@@ -27,7 +27,7 @@ const Dashboard = () => {
     const path = location.pathname;
     if (path === '/dashboard') return '1';
     if (path.includes('/dashboard/students')) return '2';
-    if (path.includes('/dashboard/lecturers')) return '3';
+    if (path.includes('/dashboard/lectures')) return '3';
     if (path.includes('/dashboard/codes')) return '4';
     if (path.includes('/dashboard/lectures/add')) return '3';
     return '1'; 
@@ -72,7 +72,7 @@ const Dashboard = () => {
               key: '3',
               icon: <VideoCameraOutlined />,
               label: 'Lecturers',
-              onClick: () => navigate('/dashboard/lecturers'),
+              onClick: () => navigate('/dashboard/lectures'),
             },
             {
               key: '4',

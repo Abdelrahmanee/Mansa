@@ -216,3 +216,13 @@ export const createLecture = async (data: any): Promise<{
   const res = await api.post(`/lectures/add_lecture`, data);
   return res.data;
 };
+
+
+export const deleteLecture = async(lectureId:string):Promise<{
+  status:string;
+  message:string;
+  data:Lecture
+}>=>{
+  const res = await api.delete(`/lectures/delete_lecture/${lectureId}`);
+  return res.data;
+}

@@ -55,7 +55,6 @@ function Navbar() {
             <li><Link to='/'>Home</Link></li>
             <li><Link to='/allLectures'>Lectures</Link></li>
             <li><Link to='/contact'>Contact</Link></li>
-            <li><Link to='/'>About us</Link></li>
           </ul>
         </div>
         <Link to='/' className="btn btn-ghost text-xl">
@@ -68,7 +67,6 @@ function Navbar() {
           <li><Link to='/allLectures'>Lectures</Link></li>
           <li><Link to='/mylectures'>My Lectures</Link></li>
           <li><Link to='/contact'>Contact</Link></li>
-          <li><Link to='/'>About us</Link></li>
         </ul>
       </div>
       <div className="navbar-end gap-2">

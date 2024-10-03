@@ -19,6 +19,10 @@ const Statistics = () => {
           {/* <BieChart /> */}
           <LineChart />
         </Col>
+        <Col span={24} className='h-96 mt-4 border-[1px] flex flex-col justify-center items-center border-gray-300 rounded-md'>
+          <BieChart />
+          {/* <LineChart /> */}
+        </Col>
       </Row>
     </div>
   )

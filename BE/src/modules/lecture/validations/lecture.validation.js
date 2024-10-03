@@ -52,19 +52,7 @@ export const generateAccessCode = Joi.object({
     query: {},
 
 })
-export const deleteLectureSchema = Joi.object({
-    body: {},
-    params: {
-        lectureId: Joi.string()
-            .regex(/^[0-9a-fA-F]{24}$/)
-            .required()
-            .messages({
-                'string.pattern.base': `Lecture ID must be a valid ObjectId`,
-            })
-    },
-    query: {},
 
-})
 
 
 
@@ -123,6 +111,20 @@ export const deleteAccessCodeSchema = Joi.object({
             .required()
             .messages({
                 'string.pattern.base': `Access Code ID must be a valid ObjectId`,
+            })
+    },
+    query: {}
+})
+
+
+export const deleteLectureSchema = Joi.object({
+    body: {},
+    params: {
+        lectureId: Joi.string()
+            .regex(/^[0-9a-fA-F]{24}$/)
+            .required()
+            .messages({
+                'string.pattern.base': `Lecture ID must be a valid ObjectId`,
             })
     },
     query: {}
