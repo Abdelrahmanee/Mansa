@@ -1,5 +1,5 @@
 import { Button, Input } from "antd"
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined ,LockOutlined} from '@ant-design/icons';
 import { Controller, useForm } from "react-hook-form";
 import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import { login } from "../../utils/api";
 import { useAppDispatch } from "../../Hooks/StoreHooks";
 import { setUser } from "../../Store/AuthSlice";
 import { ErrorResponse, LoginResponse } from "../../utils/types";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Helmet } from 'react-helmet-async';
 
 
@@ -24,15 +24,13 @@ export const Login = () => {
 
   const validationSchema = z.object({
     identifier: z.string().refine((value) => {
-      const isPhoneNumber = /^\d{11}$/.test(value); 
-      
+      const isPhoneNumber = /^\d{11}$/.test(value);
       const isEmail = z.string().email().safeParse(value).success;
-  
       return isPhoneNumber || isEmail;
     }, {
       message: "Please enter a valid email or phone number"
     }),
-    password: z.string().min(6),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
   });
 
 
@@ -40,10 +38,10 @@ export const Login = () => {
     mutationFn: async (data: { identifier: string, password: string }) => {
       return await login(data)
     },
-    onSuccess: () => {
-      toast.success('Signup successful!');
+    onSuccess: (data) => {
+      toast.success('Login successful!');
+      dispatch(setUser({ user: data.user, token: data.token }));
       navigate('/')
-      setIsLoading(false)
     },
     onError: (error) => {
       console.log('Error:', error);
@@ -57,6 +55,8 @@ export const Login = () => {
       } else {
         toast.error('An unexpected error occurred');
       }
+    },
+    onSettled: () => {
       setIsLoading(false)
     }
   })
@@ -68,15 +68,13 @@ export const Login = () => {
       password: '',
     },
     resolver: zodResolver(validationSchema),
-    mode: 'all'
+    mode: 'onBlur'
   })
 
-  const onSubmit = async (data: z.infer<typeof validationSchema>) => {
-    setIsLoading(true)
-    const res = await mutation.mutateAsync(data) as LoginResponse
-    dispatch(setUser({ user: res.user, token: res.token }))
-
-  }
+  const onSubmit = useCallback(async (data: z.infer<typeof validationSchema>) => {
+    setIsLoading(true);
+    await mutation.mutateAsync(data);
+  }, [mutation]);
 
 
   return (
@@ -84,7 +82,7 @@ export const Login = () => {
       <Helmet>
         <meta charSet="utf-8" />
         <title>E-learning : login</title>
-        <link rel="canonical" href="http://mysite.com/example" />
+        <meta name="description" content="Login to your E-learning account" />
       </Helmet>
       <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
         <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full">
@@ -96,13 +94,13 @@ export const Login = () => {
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-2 block">User name</label>
+                <label htmlFor="identifier" className="text-gray-800 text-sm mb-2 block">User name</label>
                 <div className="relative flex items-center mb-6">
                   <Controller
                     name="identifier"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} size="large" type="text" placeholder="Enter user name" prefix={<UserOutlined />} />
+                      <Input {...field} id="identifier" size="large" type="text" placeholder="Enter user name" prefix={<UserOutlined />} />
                     )}
 
                   />
@@ -112,14 +110,14 @@ export const Login = () => {
                 </div>
               </div>
               <div>
-                <label className="text-gray-800 text-sm mb-2 block">Password</label>
+                <label htmlFor="password" className="text-gray-800 text-sm mb-2 block">Password</label>
                 <div className="relative flex items-center mb-7">
 
                   <Controller
                     name="password"
                     control={control}
                     render={({ field }) => (
-                      <Input.Password {...field} size="large" type="password" placeholder="Enter password" />
+                      <Input.Password {...field} id="password" size="large" type="password" placeholder="Enter password" prefix={<LockOutlined />} />
                     )}
                   />
                   <span className={`absolute ${errors.password ? 'top-full opacity-100' : 'top-0 opacity-0'} transition-all duration-300 -z-10  text-red-500 md:min-w-[300px] text-sm`}>
@@ -144,19 +142,21 @@ export const Login = () => {
               </div>
 
               <div className="!mt-8">
-                {isLoading ? <Button type="primary" block size="large" loading>
-                  Loading
-                </Button> : <Button htmlType="submit" type="primary" block size="large">
-                  Log in
-                </Button>}
-
+                <Button
+                  htmlType="submit"
+                  type="primary"
+                  block
+                  size="large"
+                  loading={isLoading}
+                >
+                  {isLoading ? 'Logging in...' : 'Log in'}
+                </Button>
               </div>
-
               <p className="text-sm !mt-8 text-center text-gray-800">Don't have an account <Link to='/signup' className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</Link></p>
             </form>
           </div>
           <div className="lg:h-[400px] md:h-[300px] max-md:mt-8">
-            <img src="https://readymadeui.com/login-image.webp" loading="lazy" className="w-full h-full max-md:w-4/5 mx-auto block object-cover" alt="Dining Experience" />
+            <img src='assets/login-image.webp' loading="lazy" className="w-full h-full max-md:w-4/5 mx-auto block object-cover" alt="Dining Experience" />
           </div>
         </div>
       </div>

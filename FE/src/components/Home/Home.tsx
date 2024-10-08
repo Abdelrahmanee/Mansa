@@ -12,7 +12,7 @@ function Home() {
       <Helmet>
         <meta charSet="utf-8" />
         <title>E-learning</title>
-        <link rel="canonical" href="http://mysite.com/example" />
+        <meta name="description" content="E-learning website" />
       </Helmet>
       <Header />
       <MainFeature />
