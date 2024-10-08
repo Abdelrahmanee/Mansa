@@ -1,10 +1,9 @@
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { Select } from "antd";
+import { DatePicker, Select } from "antd";
 import React from "react";
 import FormInputField from "./ReusableInputField";
 import { IFormInput } from "../../utils/types";
-
-
+import dayjs from 'dayjs'; 
 
 type PersonalInfoProps = {
   control: Control<IFormInput>;
@@ -14,13 +13,34 @@ type PersonalInfoProps = {
 export const AdditionalInfo: React.FC<PersonalInfoProps> = ({ control, errors }) => {
   return (
     <>
+      <div>
+        <label htmlFor='BOD' className="text-gray-800 text-sm mb-1 block">
+          BOD:
+        </label>
+        <div className="relative flex items-center mb-6">
+          <Controller
+            name='DOB'
+            control={control}
+            render={({ field }) => (
+              <DatePicker
+                placeholder="Select your date of birth"
+                className="w-full"
+                status={errors.DOB ? "error" : undefined}
+                {...field}
+                value={field.value ? dayjs(field.value, 'DD-MM-YYYY') : null}
+                onChange={(date, dateString) => {
+                  field.onChange(dateString);
+                }}
+              />
+            )}
+          />
 
-      <FormInputField
-        name="DOB"
-        label="DOB"
-        control={control}
-        errors={errors}
-      />
+          <span className={`absolute ${errors.DOB ? 'top-full opacity-100 left-0' : 'top-[70%] opacity-0'} transition-all duration-500 z-10 text-red-500 md:min-w-[300px] text-sm`}>
+            {errors.DOB && errors.DOB.message}
+          </span>
+
+        </div>
+      </div>
 
 
       <FormInputField
@@ -64,7 +84,7 @@ export const AdditionalInfo: React.FC<PersonalInfoProps> = ({ control, errors })
       </div>
 
 
-     
+
 
     </>
   )

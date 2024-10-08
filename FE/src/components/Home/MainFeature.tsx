@@ -8,9 +8,7 @@ export const MainFeature = () => {
   return <>
     <section className='my-10'>
       <div className='w-full p-5'>
-        {/* <div className='w-fit mx-auto'>
-          <Chip color='blue' value='Features' className='!opacity-80 mb-2' />
-        </div> */}
+
         <div className='relative w-fit mx-auto'>
           <h1
             className='relative font-Acme font-bold   text-3xl md:text-4xl text-center  pb-0  text-shadow text-gray-800'
