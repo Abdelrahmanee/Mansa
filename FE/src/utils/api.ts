@@ -226,3 +226,8 @@ export const deleteLecture = async(lectureId:string):Promise<{
   const res = await api.delete(`/lectures/delete_lecture/${lectureId}`);
   return res.data;
 }
+
+export const confirmEmail = async (token:string)=>{
+  const res = await axios.get(`${baseUrl}/auth/confirmEmail/${token}`)
+  return res
+}

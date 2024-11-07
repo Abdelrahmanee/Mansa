@@ -81,7 +81,7 @@ export const Login = () => {
     <div className="font-[sans-serif]">
       <Helmet>
         <meta charSet="utf-8" />
-        <title>E-learning : login</title>
+        <title>login</title>
         <meta name="description" content="Login to your E-learning account" />
       </Helmet>
       <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">

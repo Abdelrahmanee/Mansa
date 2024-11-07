@@ -1,4 +1,4 @@
-import { Button, Layout, Menu, theme } from "antd"
+import { Breadcrumb, Button, Layout, Menu, theme } from "antd"
 
 import {
   MenuFoldOutlined,
@@ -8,7 +8,7 @@ import {
   UserOutlined,
   BarcodeOutlined
 } from '@ant-design/icons';
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -30,8 +30,22 @@ const Dashboard = () => {
     if (path.includes('/dashboard/lectures')) return '3';
     if (path.includes('/dashboard/codes')) return '4';
     if (path.includes('/dashboard/lectures/add')) return '3';
-    return '1'; 
+    return '1';
   };
+
+  const getLocation = useCallback(() => {
+    const items: {title: string}[] = [{
+      title: "Admin"
+    }]
+    location.pathname.split('/').forEach((item) => {
+      if (item.length !== 0) {
+        items.push({
+          title: item
+        })
+      }
+    })
+    return items
+  },[location])
 
 
   return (
@@ -41,7 +55,7 @@ const Dashboard = () => {
         <title>Dashboard</title>
       </Helmet>
       <Sider trigger={null} breakpoint="lg"
-        style={{backgroundColor: colorBgContainer}}
+        style={{ backgroundColor: colorBgContainer }}
         collapsedWidth="0"
         className="bg-white"
         onBreakpoint={(broken) => {
@@ -85,16 +99,22 @@ const Dashboard = () => {
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-            }}
-          />
+          <div className="flex gap-5 items-center">
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: '16px',
+                width: 64,
+                height: 64,
+              }}
+            />
+            <Breadcrumb
+              items={getLocation()}
+            />
+          </div>
+
         </Header>
         <Content
           style={{

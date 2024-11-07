@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { signup } from "../../utils/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Steps } from "antd";
+import { Button, Descriptions, Steps } from "antd";
 import { useState } from "react";
 import { Helmet } from 'react-helmet-async';
 
@@ -74,11 +74,8 @@ export const Signup = () => {
 
 
   const onSubmit = async (data: IFormInput) => {
-    // handle form submission
     setIsLoading(true);
-
     const formData = new FormData();
-
     for (const key in data) {
       if (key === 'files') {
         formData.append('profilePicture', data[key][0]);
@@ -111,27 +108,29 @@ export const Signup = () => {
   const steps = [
     {
       title: 'Personal Info',
+      descriptions: "Please enter your personal info",
       content: <PersonalInfo control={control} errors={errors} />,
     },
     {
       title: 'Additional Info',
+      descriptions: "let us know more about you",
       content: <AdditionalInfo control={control} errors={errors} />,
     },
     {
       title: 'Last Step',
+      descriptions: "This is the final step",
       content: <UploadPicture control={control} errors={errors} />,
     },
   ];
 
-  const items = steps.map((item) => ({ key: item.title, title: item.title, description: "this is a discription" }));
+  const items = steps.map((item) => ({ key: item.title, title: item.title, description: item.descriptions }));
 
 
   return (
     <>
     <Helmet>
         <meta charSet="utf-8" />
-        <title>E-learning : signup</title>
-        <link rel="canonical" href="http://mysite.com/example" />
+        <title>signup</title>
       </Helmet>
       <div className="font-[sans-serif] bg-white flex items-center md:h-screen p-4">
         <div className="w-full max-w-5xl mx-auto">
