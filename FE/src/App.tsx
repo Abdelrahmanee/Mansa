@@ -30,6 +30,7 @@ import LecturesTable from './components/Dashbaord/Lectures/LectureTable'
 import { HelmetProvider } from 'react-helmet-async'
 import CodesTable from './components/Dashbaord/Codes/CodesTables'
 import AddLecture from './components/Dashbaord/Lectures/AddLecture'
+import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail'
 
 
 
@@ -73,7 +74,8 @@ function App() {
           ]
         },
         { path: "lecture/:lectureId/access-code", element: <AccessCode /> },
-        { path: "*", element: <Error10 /> }
+        {path: "confirmEmail/:token" , element : <ConfirmEmail />},
+        { path: "*", element: <Error10 /> },
       ]
     }
   ])

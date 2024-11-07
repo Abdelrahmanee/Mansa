@@ -11,7 +11,7 @@ const useLectures = () => {
       return res;
     },
     // staleTime: 600,
-    refetchInterval: 10000,
+    refetchInterval: 3000,
   });
 };
 

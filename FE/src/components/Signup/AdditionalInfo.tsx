@@ -3,7 +3,7 @@ import { DatePicker, Select } from "antd";
 import React from "react";
 import FormInputField from "./ReusableInputField";
 import { IFormInput } from "../../utils/types";
-import dayjs from 'dayjs'; 
+import dayjs from 'dayjs';
 
 type PersonalInfoProps = {
   control: Control<IFormInput>;
@@ -19,7 +19,7 @@ export const AdditionalInfo: React.FC<PersonalInfoProps> = ({ control, errors })
         </label>
         <div className="relative flex items-center mb-6">
           <Controller
-            name='DOB'
+            name="DOB"
             control={control}
             render={({ field }) => (
               <DatePicker
@@ -27,13 +27,14 @@ export const AdditionalInfo: React.FC<PersonalInfoProps> = ({ control, errors })
                 className="w-full"
                 status={errors.DOB ? "error" : undefined}
                 {...field}
-                value={field.value ? dayjs(field.value, 'DD-MM-YYYY') : null}
+                value={field.value ? dayjs(field.value, 'YYYY-MM-DD') : null}
                 onChange={(date, dateString) => {
-                  field.onChange(dateString);
+                  field.onChange(date ? dayjs(date).format('YYYY-MM-DD') : null);
                 }}
               />
             )}
           />
+
 
           <span className={`absolute ${errors.DOB ? 'top-full opacity-100 left-0' : 'top-[70%] opacity-0'} transition-all duration-500 z-10 text-red-500 md:min-w-[300px] text-sm`}>
             {errors.DOB && errors.DOB.message}

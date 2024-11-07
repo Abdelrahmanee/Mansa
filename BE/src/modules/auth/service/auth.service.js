@@ -45,8 +45,8 @@ class AuthService {
     }
 
     async generateEmailVerificationToken(email) {
-        const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY, { expiresIn: '1h' });
-        const link = `${process.env.BASE_URL}api/v1/auth/confirmEmail/${emailToken}`;
+        const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET_KEY);
+        const link = `https://mansa-v1.vercel.app/confirmEmail/${emailToken}`;
         await sendEmail(email, 'Email Verfication' , VERIFICATION_EMAIL_TEMPLATE , link)
     }
 

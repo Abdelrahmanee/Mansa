@@ -38,7 +38,6 @@ export const UserProfileDetailsPage = () => {
     }
   });
 
-  // Define initial values
   const initialValues: FormData = {
     id: user?._id || '',
     firstName: user?.userName.split(' ')[0] || '',
@@ -72,7 +71,10 @@ export const UserProfileDetailsPage = () => {
       return await updateUser(data)
     },
     onSuccess: () => {
-      toast.success('Signup successful!');
+      messageApi.open({
+        type: 'success',
+        content: 'Updated Successfully',
+      });
       setIsLoading(false)
     },
     onError: (error) => {
@@ -95,9 +97,7 @@ export const UserProfileDetailsPage = () => {
   const onFinish = async (values: z.infer<typeof validationSchema>) => {
     setIsLoading(true)
     const changedValues = getChangedFields(values);
-    console.log('Changed Fields:', changedValues);
     if (Object.keys(changedValues).length === 0) {
-      console.log('No changes to submit.');
       messageApi.open({
         type: 'error',
         content: 'No changes to submit.',

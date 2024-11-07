@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Input, Modal, Select, Spin, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateAccessCode, getLectures } from '../../../utils/api'; // Assuming these APIs exist
 import { Lecture } from '../../../utils/types'; // Assuming you have a Lecture type defined
 import useLectures from '../../../Hooks/useLecutres';
@@ -15,6 +15,7 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const GenerateCodeModel: React.FC<GenerateCodeModelProps> = ({ setOpen, open }) => {
+  const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // Track the current step (1 for selecting lecture, 2 for displaying code)
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null); // Selected lecture ID
@@ -29,6 +30,7 @@ const GenerateCodeModel: React.FC<GenerateCodeModelProps> = ({ setOpen, open }) 
     onSuccess: (data) => {
       setGeneratedCode(data.data.code);
       setStep(2);
+      queryClient.invalidateQueries({ queryKey: ['codes'] })
     },
     onError: (error) => {
       console.error('Failed to generate code:', error);
